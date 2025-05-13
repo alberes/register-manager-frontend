@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Usuários</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .actions button {
+            margin-right: 5px;
+        }
+        a {
+           display: inline-block;
+           margin-bottom: 20px;
+           color: #007bff;
+           text-decoration: none;
+           font-size: 14px;
+       }
+
+       a:hover {
+           text-decoration: underline;
+       }
+    </style>
+</head>
+<body>
+<a th:href="@{/new-address/{userId}(userId=${userId})}">Cadastrar novo endereço</a>
+<h1>Lista de endereços</h1>
+<table>
+    <thead>
+    <tr>
+        <th>
+            <div th:object="${addresses}">
+                <a th:href="@{/addresses/{userId}(userId=${userId}, page=${addresses.firstPageNumber}, linesPerPage=${addresses.size}, orderBy=publicArea, direction=${addresses.direction})}">Logradouro</a>
+            </div>
+        </th>
+        <th>
+            <div th:object="${addresses}">
+                <a th:href="@{/addresses/{userId}(userId=${userId}, page=${addresses.firstPageNumber}, linesPerPage=${addresses.size}, orderBy=city, direction=${addresses.direction})}">Cidade</a>
+            </div>
+        </th>
+        <th>
+            <div th:object="${addresses}">
+                <a th:href="@{/addresses/{userId}(userId=${userId}, page=${addresses.firstPageNumber}, linesPerPage=${addresses.size}, orderBy=state, direction=${addresses.direction})}">Estado</a>
+            </div>
+        </th>
+        <th>
+            <div th:object="${addresses}">
+                <a th:href="@{/addresses/{userId}(userId=${userId}, page=${addresses.firstPageNumber}, linesPerPage=${addresses.size}, orderBy=zipCode, direction=${addresses.direction})}">CEP</a>
+            </div>
+        </th>
+        <th>
+            <div th:object="${addresses}">
+                <a th:href="@{/addresses/{userId}(userId=${userId}, page=${addresses.firstPageNumber}, linesPerPage=${addresses.size}, orderBy=createdDate, direction=${addresses.direction})}">Data</a>
+            </div>
+        </th>
+        <th>Ações</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="address : ${addresses.content}">
+        <td th:text="${address.publicArea}"></td>
+        <td th:text="${address.city}"></td>
+        <td th:text="${address.state}"></td>
+        <td th:text="${address.zipCode}"></td>
+        <td th:text="${address.createdDate}"></td>
+        <td class="actions">
+            <form th:action="@{/edit-address/{userId}/{addressId}(userId=${userId}, addressId=${address.id})}" method="post">
+                <input type="hidden" name="id" th:value="${address.id}" />
+                <button type="submit">Editar</button>
+            </form>
+            <form th:action="@{/delete-address/{userId}/{addressId}(userId=${userId}, addressId=${address.id})}" method="post">
+                <input type="hidden" name="id" th:value="${address.id}" />
+                <button type="submit">Excluir</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+<div th:object="${addresses}">
+    <a th:href="@{/addresses/{userId}(userId=${userId}, page=${addresses.firstPageNumber}, linesPerPage=${addresses.size}, orderBy=${addresses.orderBy}, direction=${addresses.direction})}">Primeiro</a>
+    <a th:href="@{/addresses/{userId}(userId=${userId}, page=${addresses.nextPageNumber}, linesPerPage=${addresses.size}, orderBy=${addresses.orderBy}, direction=${addresses.direction})}">Próximo</a>
+    <a th:href="@{/addresses/{userId}(userId=${userId}, page=${addresses.previousPageNumber}, linesPerPage=${addresses.size}, orderBy=${addresses.orderBy}, direction=${addresses.direction})}">Anteior</a>
+    <a th:href="@{/addresses/{userId}(userId=${userId}, page=${addresses.lastPageNumber}, linesPerPage=${addresses.size}, orderBy=${addresses.orderBy}, direction=${addresses.direction})}">Último</a>
+</div>
+</html>

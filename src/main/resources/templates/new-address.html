@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Endereço</title>
+    <style>
+        /* Estilo geral */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Container principal */
+        .container {
+            background-color: #ffffff;
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        /* Título */
+        h1 {
+            font-size: 24px;
+            color: #333333;
+            margin-bottom: 20px;
+        }
+
+        /* Grupo de formulário */
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        /* Rótulos */
+        label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #555555;
+        }
+
+        /* Campos de entrada */
+        input[type="text"], input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #333333;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]:focus, input[type="email"]:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+        /* Botões */
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 14px;
+            text-decoration: none;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: #ffffff;
+            border: none;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        a {
+           display: inline-block;
+           margin-bottom: 20px;
+           color: #007bff;
+           text-decoration: none;
+           font-size: 14px;
+       }
+
+       a:hover {
+           text-decoration: underline;
+       }
+
+        /* Estilo para destacar mensagens de sucesso */
+p.success-message {
+    color: #28a745; /* Cor verde para indicar sucesso */
+    background-color: #d4edda; /* Fundo verde claro */
+    border: 1px solid #c3e6cb; /* Borda verde */
+    padding: 10px 15px; /* Espaçamento interno */
+    border-radius: 5px; /* Bordas arredondadas */
+    font-size: 16px; /* Tamanho da fonte */
+    font-weight: bold; /* Texto em negrito */
+    text-align: center; /* Centraliza o texto */
+    width: 100%; /* Largura total */
+    max-width: 400px; /* Largura máxima */
+    margin: 20px auto; /* Centraliza horizontalmente e adiciona espaçamento vertical */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para destacar */
+}
+
+        /* Classe para destacar mensagens de erro */
+p.error-message {
+    color: #dc3545; /* Cor vermelha para o texto */
+    background-color: #f8d7da; /* Fundo vermelho claro */
+    border: 1px solid #f5c6cb; /* Borda vermelha clara */
+    padding: 10px 15px; /* Espaçamento interno */
+    border-radius: 5px; /* Bordas arredondadas */
+    font-size: 16px; /* Tamanho da fonte */
+    font-weight: bold; /* Texto em negrito */
+    text-align: center; /* Centraliza o texto */
+    width: 100%; /* Largura total */
+    max-width: 400px; /* Largura máxima */
+    margin: 20px auto; /* Centraliza horizontalmente e adiciona espaçamento vertical */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para destacar */
+}
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <div>
+        <a th:href="@{/users(page=0, linesPerPage=24, orderBy=name, direction=ASC)}">
+            Voltar a página inicial
+        </a>
+        <br>
+        <br>
+    </div>
+    <h1>Cadastrar Endereço</h1>
+    <div>
+        <p class="success-message" th:if="${message}" th:text="${message}"></p>
+    </div>
+    <div>
+        <p class="error-message" th:if="${errorMessage}" th:text="${errorMessage}"></p>
+    </div>
+    <form th:action="@{/save-address/{userId}(userId=${userId})}" method="post">
+        <div th:if="!${address.isNewRegister}">
+            <label for="logradouro">Logradouro:</label>
+            <p class="error-message" th:if="${publicArea}" th:text="${publicArea}"></p>
+            <input type="text" id="publicArea" name="publicArea" th:value="${address.publicArea}" required placeholder="Digite o logradouro">
+        </div>
+        <div  th:if="!${address.isNewRegister}">
+            <label for="number">Número:</label>
+            <p class="error-message" th:if="${number}" th:text="${number}"></p>
+            <input type="number" id="number" name="number" th:value="${address.number}" min="1" required placeholder="Digite o número">
+        </div>
+        <div  th:if="!${address.isNewRegister}">
+            <label for="complemento">Complemento:</label>
+            <p class="error-message" th:if="${additionalAddress}" th:text="${additionalAddress}"></p>
+            <input type="text" id="additionalAddress" name="additionalAddress" th:value="${address.additionalAddress}" required placeholder="Digite o complemento">
+        </div>
+        <div  th:if="!${address.isNewRegister}">
+            <label for="bairro">Bairro:</label>
+            <p class="error-message" th:if="${neighborhood}" th:text="${neighborhood}"></p>
+            <input type="text" id="neighborhood" name="neighborhood" th:value="${address.neighborhood}" required placeholder="Digite o bairro">
+        </div>
+        <div th:if="!${address.isNewRegister}">
+            <label for="cidade">Cidade:</label>
+            <p class="error-message" th:if="${city}" th:text="${city}"></p>
+            <input type="text" id="city" name="city" th:value="${address.city}" required placeholder="Digite a cidade">
+        </div>
+        <div th:if="!${address.isNewRegister}">
+            <label for="estado">Estado:</label>
+            <p class="error-message" th:if="${state}" th:text="${state}"></p>
+            <input type="text" id="state" name="state" th:value="${address.state}" required placeholder="Digite o estado">
+        </div>
+        <div>
+            <label for="cep">CEP:</label>
+            <p class="error-message" th:if="${zipCode}" th:text="${zipCode}"></p>
+            <input type="text" id="zipCode" name="zipCode" th:value="${address.zipCode}" required placeholder="Digite o CEP">
+        </div>
+        <input type="hidden" id="isNewRegister" name="isNewRegister" th:value="${address.isNewRegister}">
+        <div><br><br>
+            <button type="submit" class="btn btn-primary">Cadastrar</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

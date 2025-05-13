@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Usuários</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .actions button {
+            margin-right: 5px;
+        }
+        a {
+           display: inline-block;
+           margin-bottom: 20px;
+           color: #007bff;
+           text-decoration: none;
+           font-size: 14px;
+       }
+
+       a:hover {
+           text-decoration: underline;
+       }
+    </style>
+</head>
+<body>
+    <a th:href="@{/new-user}">Cadastrar novo usuário</a>
+<h1>Lista de Usuários</h1>
+<table>
+    <thead>
+    <tr>
+        <th>
+            <div th:object="${users}">
+                <a th:href="@{/users(page=${users.firstPageNumber}, linesPerPage=${users.size}, orderBy=name, direction=${users.direction})}">Nome</a>
+            </div>
+        </th>
+        <th>
+            <div th:object="${users}">
+                <a th:href="@{/users(page=${users.firstPageNumber}, linesPerPage=${users.size}, orderBy=email, direction=${users.direction})}">E-Mail</a>
+            </div>
+        </th>
+        <th>
+            <div th:object="${users}">
+                <a th:href="@{/users(page=${users.firstPageNumber}, linesPerPage=${users.size}, orderBy=createdDate, direction=${users.direction})}">Data</a>
+            </div>
+        </th>
+        <th>Endereços</th>
+        <th>Ações</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${users.content}">
+        <td th:text="${user.name}"></td>
+        <td th:text="${user.email}"></td>
+        <td th:text="${user.createdDate}"></td>
+        <td>
+            <a th:href="@{/addresses/{userId}(userId=${user.id})}" class="btn">Endereços</a>
+        </td>
+        <td class="actions">
+            <form th:action="@{/edit-user}" method="post">
+                <input type="hidden" name="id" th:value="${user.id}" />
+                <button type="submit">Editar</button>
+            </form>
+            <form th:action="@{/delete-user}" method="post">
+                <input type="hidden" name="id" th:value="${user.id}" />
+                <button type="submit">Excluir</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+<div th:object="${users}">
+    <a th:href="@{/users(page=${users.firstPageNumber}, linesPerPage=${users.size}, orderBy=${users.orderBy}, direction=${users.direction})}">Primeiro</a>
+    <a th:href="@{/users(page=${users.nextPageNumber}, linesPerPage=${users.size}, orderBy=${users.orderBy}, direction=${users.direction})}">Próximo</a>
+    <a th:href="@{/users(page=${users.previousPageNumber}, linesPerPage=${users.size}, orderBy=${users.orderBy}, direction=${users.direction})}">Anteior</a>
+    <a th:href="@{/users(page=${users.lastPageNumber}, linesPerPage=${users.size}, orderBy=${users.orderBy}, direction=${users.direction})}">Último</a>
+</div>
+</html>
