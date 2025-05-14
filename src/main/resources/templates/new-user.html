@@ -155,11 +155,9 @@ p.error-message {
 <body>
 <div class="container">
     <div>
-        <a th:href="@{/users(page=0, linesPerPage=24, orderBy=name, direction=ASC)}">
+        <a class="btn btn-primary" th:href="@{/users(page=0, linesPerPage=24, orderBy=name, direction=ASC)}">
             Voltar a página inicial
         </a>
-        <br>
-        <br>
     </div>
     <h1>Cadastrar Usuário</h1>
     <form th:action="@{/save-user}" method="post">

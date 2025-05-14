@@ -1,4 +1,4 @@
-package io.github.alberes.register.manager.frontend.controllers.dto;
+package io.github.alberes.register.manager.frontend.controllers.dto.page;
 
 public class Sort {
     private String direction;

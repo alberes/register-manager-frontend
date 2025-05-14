@@ -2,13 +2,16 @@ package io.github.alberes.register.manager.frontend.controllers;
 
 import feign.Response;
 import io.github.alberes.register.manager.frontend.controllers.dto.AddressDto;
-import io.github.alberes.register.manager.frontend.controllers.dto.PageAddressAccount;
+import io.github.alberes.register.manager.frontend.controllers.dto.AddressReportDto;
+import io.github.alberes.register.manager.frontend.controllers.dto.page.PageReport;
 import io.github.alberes.register.manager.frontend.services.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 
 @Controller
 @SessionAttributes("userSession")
@@ -25,7 +28,11 @@ public class AddressRegisterManagerController extends GenericController{
                         @RequestParam(value = "orderBy", defaultValue = "publicArea") String orderBy,
                         @RequestParam(value = "direction", defaultValue = "ASC") String direction,
                         Model model){
-        PageAddressAccount addresses = this.addressService.addresses(this.createBearerToken(model), userId, page, linesPerPage, orderBy, direction);
+        PageReport<AddressReportDto> addresses = this.addressService.addresses(this.createBearerToken(model), userId, page, linesPerPage, orderBy, direction);
+        if(addresses == null){
+            addresses = new PageReport<AddressReportDto>();
+            addresses.setContent(new ArrayList<AddressReportDto>());
+        }
         model.addAttribute("addresses", addresses);
         model.addAttribute("userId", userId);
         return "list-address";

@@ -1,9 +1,10 @@
 package io.github.alberes.register.manager.frontend.services;
 
 import feign.Response;
-import io.github.alberes.register.manager.frontend.controllers.dto.PageUserAccount;
 import io.github.alberes.register.manager.frontend.controllers.dto.UserAccountDto;
+import io.github.alberes.register.manager.frontend.controllers.dto.UserAccountReportDto;
 import io.github.alberes.register.manager.frontend.controllers.dto.UserAccountUpdateDto;
+import io.github.alberes.register.manager.frontend.controllers.dto.page.PageReport;
 import io.github.alberes.register.manager.frontend.services.exceptions.RegisterManagerErrorDecoder;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
@@ -25,11 +26,11 @@ public interface UserAccountService {
     public Response delete(@RequestHeader("Authorization") String token, @PathVariable String id);
 
     @GetMapping("users/{id}/all")
-    public PageUserAccount allUsers(@RequestHeader("Authorization") String token,
-                                    @PathVariable String id,
-                                    @RequestParam(value = "page", defaultValue = "0") Integer page,
-                                    @RequestParam(value = "linesPerPage", defaultValue = "24") Integer linesPerPage,
-                                    @RequestParam(value = "orderBy", defaultValue = "name") String orderBy,
-                                    @RequestParam(value = "direction", defaultValue = "ASC") String direction);
+    public PageReport<UserAccountReportDto> allUsers(@RequestHeader("Authorization") String token,
+                                                     @PathVariable String id,
+                                                     @RequestParam(value = "page", defaultValue = "0") Integer page,
+                                                     @RequestParam(value = "linesPerPage", defaultValue = "24") Integer linesPerPage,
+                                                     @RequestParam(value = "orderBy", defaultValue = "name") String orderBy,
+                                                     @RequestParam(value = "direction", defaultValue = "ASC") String direction);
 
 }

@@ -1,10 +1,11 @@
-package io.github.alberes.register.manager.frontend.controllers.dto;
+package io.github.alberes.register.manager.frontend.controllers.dto.page;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class PageUserAccount {
+public class PageReport<T> {
 
-    private List<UserAccountReportDto> content;
+    private List<T> content;
     private Pageable pageable;
     private boolean last;
     private int totalPages;
@@ -17,15 +18,18 @@ public class PageUserAccount {
     private boolean empty;
 
     // Getters e Setters
-    public List<UserAccountReportDto> getContent() {
+    public List<T> getContent() {
         return content;
     }
 
-    public void setContent(List<UserAccountReportDto> content) {
+    public void setContent(List<T> content) {
         this.content = content;
     }
 
     public Pageable getPageable() {
+        if(this.pageable == null){
+            this.pageable = new Pageable();
+        }
         return pageable;
     }
 
@@ -74,6 +78,9 @@ public class PageUserAccount {
     }
 
     public List<Sort> getSort() {
+        if(this.sort == null){
+            this.sort = new ArrayList<Sort>();
+        }
         return sort;
     }
 
@@ -131,14 +138,14 @@ public class PageUserAccount {
     }
 
     public String getDirection(){
-        if(this.sort.size() > 0) {
+        if(this.getSort().size() > 0) {
             return this.sort.get(0).getDirection();
         }
         return "";
     }
 
     public String getOrderBy(){
-        if(this.sort.size() > 0) {
+        if(this.getSort().size() > 0) {
             return this.sort.get(0).getProperty();
         }
         return "";

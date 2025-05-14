@@ -139,11 +139,9 @@ p.success-message {
 <body>
 <div class="container">
     <div>
-        <a th:href="@{/users(page=0, linesPerPage=24, orderBy=name, direction=ASC)}">
+        <a class="btn btn-primary" th:href="@{/users(page=0, linesPerPage=24, orderBy=name, direction=ASC)}">
             Voltar a página inicial
         </a>
-        <br>
-        <br>
     </div>
     <h1>Atualizar Endereço</h1>
     <div>
@@ -187,7 +185,7 @@ p.success-message {
         </div>
         <div><br><br>
             <a class="btn btn-secondary" th:href="@{/delete-address/{userId}/{addressId}(userId=${userId}, addressId=${address.id})}">Excluir</a>
-            <button type="submit" class="btn btn-primary">Cadastrar</button>
+            <button type="submit" class="btn btn-primary">Atualizar</button>
         </div>
     </form>
 </div>

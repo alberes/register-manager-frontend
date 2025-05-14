@@ -56,7 +56,14 @@
     </style>
 </head>
 <body>
-<a th:href="@{/new-address/{userId}(userId=${userId})}">Cadastrar novo endereço</a>
+<div>
+    <a class="btn btn-primary" th:href="@{/users(page=0, linesPerPage=24, orderBy=name, direction=ASC)}">
+        Voltar a página inicial
+    </a>
+</div>
+<div>
+    <a class="btn btn-primary" th:href="@{/new-address/{userId}(userId=${userId})}">Cadastrar novo endereço</a>
+</div>
 <h1>Lista de endereços</h1>
 <table>
     <thead>

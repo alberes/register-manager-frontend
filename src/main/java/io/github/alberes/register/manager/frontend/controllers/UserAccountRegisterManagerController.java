@@ -2,6 +2,7 @@ package io.github.alberes.register.manager.frontend.controllers;
 
 import feign.Response;
 import io.github.alberes.register.manager.frontend.controllers.dto.*;
+import io.github.alberes.register.manager.frontend.controllers.dto.page.PageReport;
 import io.github.alberes.register.manager.frontend.services.LoginService;
 import io.github.alberes.register.manager.frontend.services.UserAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,7 +86,7 @@ public class UserAccountRegisterManagerController extends GenericController{
                         @RequestParam(value = "direction", defaultValue = "ASC") String direction,
                         Model model){
         UserSessionDto userSessionDto = (UserSessionDto)model.getAttribute("userSession");
-        PageUserAccount users = this.userAccountService.allUsers(
+        PageReport<UserAccountReportDto> users = this.userAccountService.allUsers(
                 this.createBearerToken(model),
                 userSessionDto.getToken().id(), page, linesPerPage, orderBy, direction);
         model.addAttribute("users", users);
@@ -122,7 +123,4 @@ public class UserAccountRegisterManagerController extends GenericController{
             return "error";
         }
     }
-
-
-
 }

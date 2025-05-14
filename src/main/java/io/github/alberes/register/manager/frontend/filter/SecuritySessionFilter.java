@@ -31,8 +31,7 @@ public class SecuritySessionFilter extends OncePerRequestFilter {
 
         String requestURI = request.getRequestURI();
         if(!IGNORED_PATHS.containsKey(requestURI)){
-            Object userSession = request.getSession().getAttribute("userSession");
-            if(userSession == null) {
+            if(request.getSession(false) == null || request.getSession().getAttribute("userSession") == null) {
                 response.sendRedirect("/login");
             }
         }
