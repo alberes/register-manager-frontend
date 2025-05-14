@@ -1,0 +1,11 @@
+spring:
+  application:
+  name: register-manager-frontend
+
+server:
+  servlet:
+    session:
+      timeout: ${EXPIRATION_TIME:25m}
+
+registermanager:
+  url: ${REGISTER_MANAGER_URL:http://register-manager:8081/api/v1}

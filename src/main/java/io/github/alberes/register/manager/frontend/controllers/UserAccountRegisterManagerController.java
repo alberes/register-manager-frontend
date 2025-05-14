@@ -48,12 +48,16 @@ public class UserAccountRegisterManagerController extends GenericController{
                 return home(model);
             }
         }else{
+            model.addAttribute("messageInvalidLogin", "Usuário ou senha invalido.");
             return home(model);
         }
     }
 
     @GetMapping("/new-user")
     public String newUser(Model model){
+        if(this.isInvalidSession(model)){
+            return home(model);
+        }
         Object user = model.getAttribute("user");
         if(user == null) {
             model.addAttribute("user", new UserAccountDto("", "", "", "", ""));
@@ -63,6 +67,9 @@ public class UserAccountRegisterManagerController extends GenericController{
 
     @PostMapping("/save-user")
     public String saveUser(UserAccountDto dto, Model model){
+        if(this.isInvalidSession(model)){
+            return home(model);
+        }
         UserSessionDto userSessionDto = (UserSessionDto)model.getAttribute("userSession");
         Response response = this.userAccountService.save(this.createBearerToken(model), dto);
         if(response.status() == HttpStatus.CREATED.value()) {
@@ -85,6 +92,9 @@ public class UserAccountRegisterManagerController extends GenericController{
                         @RequestParam(value = "orderBy", defaultValue = "name") String orderBy,
                         @RequestParam(value = "direction", defaultValue = "ASC") String direction,
                         Model model){
+        if(this.isInvalidSession(model)){
+            return home(model);
+        }
         UserSessionDto userSessionDto = (UserSessionDto)model.getAttribute("userSession");
         PageReport<UserAccountReportDto> users = this.userAccountService.allUsers(
                 this.createBearerToken(model),
@@ -96,8 +106,16 @@ public class UserAccountRegisterManagerController extends GenericController{
 
     @GetMapping("/delete-user/{id}")
     public String deleteUser(@PathVariable String id, Model model){
+        if(this.isInvalidSession(model)){
+            return home(model);
+        }
         Response response = this.userAccountService.delete(this.createBearerToken(model), id);
         if(response.status() == HttpStatus.NO_CONTENT.value()){
+            UserSessionDto userSessionDto = (UserSessionDto)model.getAttribute("userSession");
+            //Owner user deleted hisself
+            if(id.equals(userSessionDto.getToken().id())){
+                return this.home(model);
+            }
             return users(0, 24, "name", "ASC", model);
         }else{
             model.addAttribute("message", "Entre em contato com administrador.");
@@ -107,6 +125,9 @@ public class UserAccountRegisterManagerController extends GenericController{
 
     @GetMapping("/edit-user/{id}")
     public String editUser(@PathVariable String id, Model model){
+        if(this.isInvalidSession(model)){
+            return home(model);
+        }
         UserAccountDto userAccountDto = this.userAccountService.find(this.createBearerToken(model), id);
         model.addAttribute("user", userAccountDto);
         return "edit-user";
@@ -114,6 +135,9 @@ public class UserAccountRegisterManagerController extends GenericController{
 
     @PostMapping("/update-user/{id}")
     public String updateUser(@PathVariable String id, UserAccountUpdateDto dto, Model model){
+        if(this.isInvalidSession(model)){
+            return home(model);
+        }
         Response response = this.userAccountService.update(this.createBearerToken(model), id, dto);
         if(response.status() == HttpStatus.NO_CONTENT.value()){
             model.addAttribute("message", "Atualizado com sucesso.");

@@ -59,6 +59,9 @@
 <div>
     <a class="btn btn-primary" th:href="@{/new-user}">Cadastrar novo usuário</a>
 </div>
+<div>
+    <a class="btn btn-primary" th:href="@{/login}">Sair</a>
+</div>
 <h1>Lista de Usuários</h1>
 <table>
     <thead>
@@ -97,7 +100,7 @@
     </tbody>
 </table>
 </body>
-<div th:object="${users}">
+<div th:object="${users}" th:if="${users.totalPages > 1}">
     <a th:href="@{/users(page=${users.firstPageNumber}, linesPerPage=${users.size}, orderBy=${users.orderBy}, direction=${users.direction})}">Primeiro</a>
     <a th:href="@{/users(page=${users.nextPageNumber}, linesPerPage=${users.size}, orderBy=${users.orderBy}, direction=${users.direction})}">Próximo</a>
     <a th:href="@{/users(page=${users.previousPageNumber}, linesPerPage=${users.size}, orderBy=${users.orderBy}, direction=${users.direction})}">Anteior</a>

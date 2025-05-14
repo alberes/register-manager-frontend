@@ -1,0 +1,11 @@
+spring:
+  application:
+  name: register-manager-frontend
+
+server:
+  servlet:
+    session:
+      timeout: 25m
+
+registermanager:
+  url: http://localhost:8081/api/v1

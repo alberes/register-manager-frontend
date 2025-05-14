@@ -5,7 +5,9 @@ import feign.Response;
 import io.github.alberes.register.manager.frontend.controllers.dto.UserSessionDto;
 import io.github.alberes.register.manager.frontend.controllers.exceptions.FieldErroDto;
 import io.github.alberes.register.manager.frontend.controllers.exceptions.StandardErrorDto;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.io.IOException;
 import java.net.URI;
@@ -15,6 +17,11 @@ import java.util.Collection;
 public abstract class GenericController {
 
     ObjectMapper objectMapper = new ObjectMapper();
+
+    public boolean isInvalidSession(Model model){
+        model.addAttribute("messageSessionTimeout", "Sessão expirada, fazer o login novamente!");
+        return model.getAttribute("userSession") == null;
+    }
 
     public String createBearerToken(Model model){
         UserSessionDto userSessionDto = (UserSessionDto)model.getAttribute("userSession");

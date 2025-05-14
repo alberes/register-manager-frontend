@@ -102,12 +102,35 @@
         .links a:hover {
             color: #fff;
         }
+
+
+        /* Classe para destacar mensagens de erro */
+p.error-message {
+    color: #dc3545; /* Cor vermelha para o texto */
+    background-color: #f8d7da; /* Fundo vermelho claro */
+    border: 1px solid #f5c6cb; /* Borda vermelha clara */
+    padding: 10px 15px; /* Espaçamento interno */
+    border-radius: 5px; /* Bordas arredondadas */
+    font-size: 16px; /* Tamanho da fonte */
+    font-weight: bold; /* Texto em negrito */
+    text-align: center; /* Centraliza o texto */
+    width: 100%; /* Largura total */
+    max-width: 400px; /* Largura máxima */
+    margin: 20px auto; /* Centraliza horizontalmente e adiciona espaçamento vertical */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para destacar */
+}
     </style>
 </head>
 <body>
 <div class="login-container">
     <div class="login-box">
         <h2>Login</h2>
+        <div>
+            <div>
+                <p class="error-message" th:if="${messageSessionTimeout}" th:text="${messageSessionTimeout}"></p>
+                <p class="error-message" th:if="${messageInvalidLogin}" th:text="${messageInvalidLogin}"></p>
+            </div>
+        </div>
         <form th:action="@{/login-user}" method="post">
             <div class="input-group">
                 <label for="username">Usuário</label>

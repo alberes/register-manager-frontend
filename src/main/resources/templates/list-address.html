@@ -110,7 +110,7 @@
     </tbody>
 </table>
 </body>
-<div th:object="${addresses}">
+<div th:object="${addresses}" th:if="${addresses.totalPages > 1}">
     <a th:href="@{/addresses/{userId}(userId=${userId}, page=${addresses.firstPageNumber}, linesPerPage=${addresses.size}, orderBy=${addresses.orderBy}, direction=${addresses.direction})}">Primeiro</a>
     <a th:href="@{/addresses/{userId}(userId=${userId}, page=${addresses.nextPageNumber}, linesPerPage=${addresses.size}, orderBy=${addresses.orderBy}, direction=${addresses.direction})}">Próximo</a>
     <a th:href="@{/addresses/{userId}(userId=${userId}, page=${addresses.previousPageNumber}, linesPerPage=${addresses.size}, orderBy=${addresses.orderBy}, direction=${addresses.direction})}">Anteior</a>

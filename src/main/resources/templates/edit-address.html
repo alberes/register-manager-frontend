@@ -181,7 +181,8 @@ p.success-message {
         <div>
             <label for="cep">CEP:</label>
             <p class="error-message" th:if="${zipCode}" th:text="${zipCode}"></p>
-            <input type="text" id="zipCode" name="zipCode" th:value="${address.zipCode}" required placeholder="Digite o CEP">
+            <p th:text="${address.zipCode}"></p>
+            <input type="hidden" id="zipCode" name="zipCode" th:value="${address.zipCode}" required placeholder="Digite o CEP">
         </div>
         <div><br><br>
             <a class="btn btn-secondary" th:href="@{/delete-address/{userId}/{addressId}(userId=${userId}, addressId=${address.id})}">Excluir</a>

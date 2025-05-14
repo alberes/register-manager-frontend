@@ -1,0 +1,56 @@
+services:
+  postgresdb:
+    image: postgres:16.3
+    container_name: postgresdb
+    ports:
+      - 5432:5432
+    networks:
+      - register-manager-network
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES: postgres
+      POSTGRES_DB: register_manager
+  pgadmin4:
+    image: dpage/pgadmin4:8.9
+    container_name: pgadmin
+    ports:
+      - "15432:80"
+    networks:
+      - register-manager-network
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+  register-manager:
+    image: alberes/register-manager:1.0.0
+    container_name: register-manager
+    ports:
+      - "8081:8081"
+    environment:
+      DATASOURCE_URL: jdbc:postgresql://postgresdb:5432/register_manager
+      DATASOURCE_USER: postgres
+      DATASOURCE_PASSWORD: postgres
+      VIA_CEP_URL: https://viacep.com.br/ws/
+      EXPIRATION_TIME: 30
+    networks:
+      - register-manager-network
+    depends_on:
+      - postgresdb
+  register-manager-frontend:
+    image: alberes/register-manager-frontend:1.0.0
+    container_name: register-manager-frontend
+    ports:
+      - "8080:8080"
+    environment:
+      REGISTER_MANAGER_URL: http://register-manager:8081/api/v1
+      EXPIRATION_TIME: 30
+    networks:
+      - register-manager-network
+    depends_on:
+      - register-manager
+networks:
+  register-manager-network:
+    driver: bridge
+volumes:
+  pgadmin-data:

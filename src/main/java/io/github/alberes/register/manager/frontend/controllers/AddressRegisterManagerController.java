@@ -3,6 +3,7 @@ package io.github.alberes.register.manager.frontend.controllers;
 import feign.Response;
 import io.github.alberes.register.manager.frontend.controllers.dto.AddressDto;
 import io.github.alberes.register.manager.frontend.controllers.dto.AddressReportDto;
+import io.github.alberes.register.manager.frontend.controllers.dto.UserSessionDto;
 import io.github.alberes.register.manager.frontend.controllers.dto.page.PageReport;
 import io.github.alberes.register.manager.frontend.services.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,11 @@ public class AddressRegisterManagerController extends GenericController{
     @Autowired
     private AddressService addressService;
 
+    @GetMapping("/login-address")
+    public String home(Model model){
+        return "login";
+    }
+
     @GetMapping("/addresses/{userId}")
     public String addresses(
             @PathVariable String userId,
@@ -28,6 +34,9 @@ public class AddressRegisterManagerController extends GenericController{
                         @RequestParam(value = "orderBy", defaultValue = "publicArea") String orderBy,
                         @RequestParam(value = "direction", defaultValue = "ASC") String direction,
                         Model model){
+        if(this.isInvalidSession(model)){
+            return this.home(model);
+        }
         PageReport<AddressReportDto> addresses = this.addressService.addresses(this.createBearerToken(model), userId, page, linesPerPage, orderBy, direction);
         if(addresses == null){
             addresses = new PageReport<AddressReportDto>();
@@ -40,6 +49,9 @@ public class AddressRegisterManagerController extends GenericController{
 
     @GetMapping("new-address/{userId}")
     public String newAddress(@PathVariable String userId, Model model){
+        if(this.isInvalidSession(model)){
+            return home(model);
+        }
         Object address = model.getAttribute("address");
         if(address == null) {
             AddressDto dto = new AddressDto();
@@ -51,6 +63,10 @@ public class AddressRegisterManagerController extends GenericController{
 
     @PostMapping("save-address/{userId}")
     public String saveAddress(@PathVariable String userId, @RequestParam boolean isNewRegister, AddressDto dto, Model model){
+        if(this.isInvalidSession(model)){
+            return home(model);
+        }
+        UserSessionDto userSession = (UserSessionDto)model.getAttribute("userSession");
         if(isNewRegister){
             AddressDto addressDto = this.addressService.searchZipcode(this.createBearerToken(model), userId, dto.getZipCode());
             addressDto.setZipCode(dto.getZipCode());
@@ -59,16 +75,22 @@ public class AddressRegisterManagerController extends GenericController{
             }else {
                 addressDto.setNewRegister(false);
                 addressDto.setUserId(userId);
-                model.addAttribute("address", addressDto);
-            }
+                userSession.getCache().put("ZIP_CODE", addressDto.getZipCode());
+                model.addAttribute("address", addressDto);            }
             return newAddress(userId, model);
         }else{
+            String zipCode = (String) userSession.getCache().get("ZIP_CODE");
+            if(!dto.getZipCode().equals(zipCode)){
+                model.addAttribute("errorMessage", "O CEP foi alterado após o preenchimento!");
+                return newAddress(userId, model);
+            }
             Response response = this.addressService.save(this.createBearerToken(model), userId,  dto);
             if(response.status() == HttpStatus.CREATED.value()){
                 String id = this.extractId(response);
                 dto.setId(id);
                 model.addAttribute("message", "Cadastro criado com sucess!");
                 model.addAttribute("address", dto);
+                userSession.getCache().remove("ZIP_CODE");
                 return "edit-address";
             }else{
                 this.createMessages(model, response);
@@ -81,6 +103,10 @@ public class AddressRegisterManagerController extends GenericController{
     @PostMapping("update-address/{userId}/{addressId}")
     public String updateAddress(@PathVariable String userId, @PathVariable String addressId,
                                 AddressDto dto, Model model){
+        if(this.isInvalidSession(model)){
+            return home(model);
+        }
+        dto.setId(addressId);
         Response response = this.addressService.update(this.createBearerToken(model), userId, addressId, dto);
         if(response.status() == HttpStatus.NO_CONTENT.value()){
             model.addAttribute("message", "Atualizado com sucesso.");
@@ -95,6 +121,9 @@ public class AddressRegisterManagerController extends GenericController{
 
     @GetMapping("edit-address/{userId}/{addressId}")
     public String editAddress(@PathVariable String userId, @PathVariable String addressId, Model model){
+        if(this.isInvalidSession(model)){
+            return home(model);
+        }
         AddressDto addressDto = this.addressService.find(this.createBearerToken(model), userId, addressId);
         addressDto.setUserId(userId);
         model.addAttribute("address", addressDto);
@@ -103,6 +132,9 @@ public class AddressRegisterManagerController extends GenericController{
 
     @GetMapping("delete-address/{userId}/{addressId}")
     public String deleteAddress(@PathVariable String userId, @PathVariable String addressId, Model model){
+        if(this.isInvalidSession(model)){
+            return home(model);
+        }
         Response response = this.addressService.delete(this.createBearerToken(model), userId, addressId);
         if(response.status() == HttpStatus.NO_CONTENT.value()){
             return this.addresses(userId, 0, 24, "publicArea", "ASC", model);
