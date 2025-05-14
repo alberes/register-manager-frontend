@@ -3,15 +3,12 @@ package io.github.alberes.register.manager.frontend.controllers;
 import feign.Response;
 import io.github.alberes.register.manager.frontend.controllers.dto.AddressDto;
 import io.github.alberes.register.manager.frontend.controllers.dto.PageAddressAccount;
-import io.github.alberes.register.manager.frontend.controllers.exceptions.StandardErrorDto;
 import io.github.alberes.register.manager.frontend.services.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
 
 @Controller
 @SessionAttributes("userSession")
@@ -89,16 +86,15 @@ public class AddressRegisterManagerController extends GenericController{
 
     }
 
-    @PostMapping("edit-address/{userId}/{addressId}")
+    @GetMapping("edit-address/{userId}/{addressId}")
     public String editAddress(@PathVariable String userId, @PathVariable String addressId, Model model){
         AddressDto addressDto = this.addressService.find(this.createBearerToken(model), userId, addressId);
         addressDto.setUserId(userId);
         model.addAttribute("address", addressDto);
         return "edit-address";
-
     }
 
-    @PostMapping("delete-address/{userId}/{addressId}")
+    @GetMapping("delete-address/{userId}/{addressId}")
     public String deleteAddress(@PathVariable String userId, @PathVariable String addressId, Model model){
         Response response = this.addressService.delete(this.createBearerToken(model), userId, addressId);
         if(response.status() == HttpStatus.NO_CONTENT.value()){

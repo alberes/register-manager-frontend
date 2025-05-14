@@ -103,7 +103,7 @@
         }
 
         .btn-secondary:hover {
-            background-color: #5a6268;
+            background-color: #FF0000;
         }
 
         a {
@@ -155,6 +155,7 @@ p.success-message {
             <input type="text" id="name" name="name" th:value="${user.name}" required>
         </div>
         <div><br><br>
+            <a class="btn btn-secondary" th:href="@{/delete-user/{id}(id=${user.id})}">Excluir</a>
             <button type="submit" class="btn btn-primary">Atualizar</button>
         </div>
     </form>

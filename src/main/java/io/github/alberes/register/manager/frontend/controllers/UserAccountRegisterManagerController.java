@@ -2,8 +2,6 @@ package io.github.alberes.register.manager.frontend.controllers;
 
 import feign.Response;
 import io.github.alberes.register.manager.frontend.controllers.dto.*;
-import io.github.alberes.register.manager.frontend.controllers.exceptions.FieldErroDto;
-import io.github.alberes.register.manager.frontend.controllers.exceptions.StandardErrorDto;
 import io.github.alberes.register.manager.frontend.services.LoginService;
 import io.github.alberes.register.manager.frontend.services.UserAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.net.URI;
 
 @Controller
 @SessionAttributes("userSession")
@@ -96,8 +93,8 @@ public class UserAccountRegisterManagerController extends GenericController{
     }
 
 
-    @PostMapping("/delete-user")
-    public String deleteUser(@RequestParam String id, Model model){
+    @GetMapping("/delete-user/{id}")
+    public String deleteUser(@PathVariable String id, Model model){
         Response response = this.userAccountService.delete(this.createBearerToken(model), id);
         if(response.status() == HttpStatus.NO_CONTENT.value()){
             return users(0, 24, "name", "ASC", model);
@@ -107,8 +104,8 @@ public class UserAccountRegisterManagerController extends GenericController{
         }
     }
 
-    @PostMapping("/edit-user")
-    public String editUser(@RequestParam String id, Model model){
+    @GetMapping("/edit-user/{id}")
+    public String editUser(@PathVariable String id, Model model){
         UserAccountDto userAccountDto = this.userAccountService.find(this.createBearerToken(model), id);
         model.addAttribute("user", userAccountDto);
         return "edit-user";

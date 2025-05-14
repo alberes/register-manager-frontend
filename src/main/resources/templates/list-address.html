@@ -31,6 +31,28 @@
        a:hover {
            text-decoration: underline;
        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 14px;
+            text-decoration: none;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
     </style>
 </head>
 <body>
@@ -64,7 +86,7 @@
                 <a th:href="@{/addresses/{userId}(userId=${userId}, page=${addresses.firstPageNumber}, linesPerPage=${addresses.size}, orderBy=createdDate, direction=${addresses.direction})}">Data</a>
             </div>
         </th>
-        <th>Ações</th>
+        <th>Ação</th>
     </tr>
     </thead>
     <tbody>
@@ -75,14 +97,7 @@
         <td th:text="${address.zipCode}"></td>
         <td th:text="${address.createdDate}"></td>
         <td class="actions">
-            <form th:action="@{/edit-address/{userId}/{addressId}(userId=${userId}, addressId=${address.id})}" method="post">
-                <input type="hidden" name="id" th:value="${address.id}" />
-                <button type="submit">Editar</button>
-            </form>
-            <form th:action="@{/delete-address/{userId}/{addressId}(userId=${userId}, addressId=${address.id})}" method="post">
-                <input type="hidden" name="id" th:value="${address.id}" />
-                <button type="submit">Excluir</button>
-            </form>
+            <a class="btn btn-primary" th:href="@{/edit-address/{userId}/{addressId}(userId=${userId}, addressId=${address.id})}">Editar</a>
         </td>
     </tr>
     </tbody>
