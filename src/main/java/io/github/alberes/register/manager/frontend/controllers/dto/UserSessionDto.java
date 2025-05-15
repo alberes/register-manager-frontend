@@ -1,11 +1,16 @@
 package io.github.alberes.register.manager.frontend.controllers.dto;
 
+import io.github.alberes.register.manager.frontend.constants.MessageConstants;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class UserSessionDto {
 
     private TokenDto token;
+
+    private UserAccountProfileDto userAccountProfileDto;
 
     private Map<String, Object> cache;
 
@@ -17,6 +22,19 @@ public class UserSessionDto {
         this.token = token;
     }
 
+    public UserSessionDto(TokenDto token, UserAccountProfileDto userAccountProfileDto) {
+        this.token = token;
+        this.userAccountProfileDto = userAccountProfileDto;
+    }
+
+    public UserAccountProfileDto getUserAccountProfileDto() {
+        return userAccountProfileDto;
+    }
+
+    public void setUserAccountProfileDto(UserAccountProfileDto userAccountProfileDto) {
+        this.userAccountProfileDto = userAccountProfileDto;
+    }
+
     public TokenDto getToken() {
         return token;
     }
@@ -26,5 +44,13 @@ public class UserSessionDto {
             this.cache = new HashMap<String, Object>();
         }
         return cache;
+    }
+
+    public boolean isAdmin(){
+        return this.userAccountProfileDto.getProfiles()
+                .stream()
+                .filter(p -> MessageConstants.ADMIN.equals(p))
+                .findFirst()
+                .isPresent();
     }
 }

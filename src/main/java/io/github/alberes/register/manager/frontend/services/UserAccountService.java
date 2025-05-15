@@ -2,6 +2,7 @@ package io.github.alberes.register.manager.frontend.services;
 
 import feign.Response;
 import io.github.alberes.register.manager.frontend.controllers.dto.UserAccountDto;
+import io.github.alberes.register.manager.frontend.controllers.dto.UserAccountProfileDto;
 import io.github.alberes.register.manager.frontend.controllers.dto.UserAccountReportDto;
 import io.github.alberes.register.manager.frontend.controllers.dto.UserAccountUpdateDto;
 import io.github.alberes.register.manager.frontend.controllers.dto.page.PageReport;
@@ -17,6 +18,9 @@ public interface UserAccountService {
 
     @GetMapping("users/{id}")
     public UserAccountDto find(@RequestHeader("Authorization") String token, @PathVariable String id);
+
+    @GetMapping("users/authenticated")
+    public UserAccountProfileDto authenticated(@RequestHeader("Authorization") String token);
 
     @PutMapping("users/{id}")
     public Response update(@RequestHeader("Authorization") String token,

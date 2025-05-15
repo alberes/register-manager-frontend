@@ -20,11 +20,13 @@ Funcionalidades
 ### Como Executar
 1. Clone o repositório: git clone https://github.com/alberes/register-manager-frontend
 2. Acesso ao backend:
-Certifique-se de que o backend register-manager está configurado corretamente.
-3. Usando uma imagem Docker (Opcional)
-
-4. Executar o projeto
+Certifique-se de que o backend register-manager está configurado corretamente e dependências.
+3. Backend https://github.com/alberes/register-manager/blob/master/README.md
+4. Usando uma imagem Docker (Opcional)
+5. Executar o projeto
 - Abrir o terminal na raiz do projeto [SUB_DIRETORIOS]/register-manager-frontend e exeuctar o comando abaixo para gerar o pacote.
+- Tempo de sessão igual ou menor do tempo de sessão do backend [ver][https://github.com/alberes/register-manager/blob/master/README.md]
+
 ```
 mvn -DskipTests=true clean package
 ```

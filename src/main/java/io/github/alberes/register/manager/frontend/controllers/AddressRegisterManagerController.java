@@ -1,6 +1,7 @@
 package io.github.alberes.register.manager.frontend.controllers;
 
 import feign.Response;
+import io.github.alberes.register.manager.frontend.constants.MessageConstants;
 import io.github.alberes.register.manager.frontend.controllers.dto.AddressDto;
 import io.github.alberes.register.manager.frontend.controllers.dto.AddressReportDto;
 import io.github.alberes.register.manager.frontend.controllers.dto.UserSessionDto;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 
 @Controller
-@SessionAttributes("userSession")
+@SessionAttributes(MessageConstants.USER_SESSION)
 public class AddressRegisterManagerController extends GenericController{
 
     @Autowired
@@ -42,9 +43,9 @@ public class AddressRegisterManagerController extends GenericController{
             addresses = new PageReport<AddressReportDto>();
             addresses.setContent(new ArrayList<AddressReportDto>());
         }
-        model.addAttribute("addresses", addresses);
-        model.addAttribute("userId", userId);
-        return "list-address";
+        model.addAttribute(MessageConstants.ADDRESSES, addresses);
+        model.addAttribute(MessageConstants.USERID, userId);
+        return MessageConstants.LIST_ADDRESS;
     }
 
     @GetMapping("new-address/{userId}")
@@ -52,13 +53,13 @@ public class AddressRegisterManagerController extends GenericController{
         if(this.isInvalidSession(model)){
             return home(model);
         }
-        Object address = model.getAttribute("address");
+        Object address = model.getAttribute(MessageConstants.ADDRESS);
         if(address == null) {
             AddressDto dto = new AddressDto();
             dto.setUserId(userId);
             dto.setNewRegister(true);
-            model.addAttribute("address", dto);        }
-        return "new-address";
+            model.addAttribute(MessageConstants.ADDRESS, dto);        }
+        return MessageConstants.NEW_ADDRESS;
     }
 
     @PostMapping("save-address/{userId}")
@@ -66,35 +67,35 @@ public class AddressRegisterManagerController extends GenericController{
         if(this.isInvalidSession(model)){
             return home(model);
         }
-        UserSessionDto userSession = (UserSessionDto)model.getAttribute("userSession");
+        UserSessionDto userSession = (UserSessionDto)model.getAttribute(MessageConstants.USER_SESSION);
         if(isNewRegister){
             AddressDto addressDto = this.addressService.searchZipcode(this.createBearerToken(model), userId, dto.getZipCode());
             addressDto.setZipCode(dto.getZipCode());
             if(addressDto.getPublicArea() == null){
-                model.addAttribute("errorMessage", "Endereço não encontrado!");
+                model.addAttribute(MessageConstants.ERRORMESSAGE, this.getMessageSource("address.not.find"));
             }else {
                 addressDto.setNewRegister(false);
                 addressDto.setUserId(userId);
-                userSession.getCache().put("ZIP_CODE", addressDto.getZipCode());
-                model.addAttribute("address", addressDto);            }
+                userSession.getCache().put(MessageConstants.ZIP_CODE, addressDto.getZipCode());
+                model.addAttribute(MessageConstants.ADDRESS, addressDto);            }
             return newAddress(userId, model);
         }else{
-            String zipCode = (String) userSession.getCache().get("ZIP_CODE");
+            String zipCode = (String) userSession.getCache().get(MessageConstants.ZIP_CODE);
             if(!dto.getZipCode().equals(zipCode)){
-                model.addAttribute("errorMessage", "O CEP foi alterado após o preenchimento!");
+                model.addAttribute(MessageConstants.ERRORMESSAGE, this.getMessageSource(MessageConstants.ZIPCODE_CHANGED));
                 return newAddress(userId, model);
             }
             Response response = this.addressService.save(this.createBearerToken(model), userId,  dto);
             if(response.status() == HttpStatus.CREATED.value()){
                 String id = this.extractId(response);
                 dto.setId(id);
-                model.addAttribute("message", "Cadastro criado com sucess!");
-                model.addAttribute("address", dto);
-                userSession.getCache().remove("ZIP_CODE");
-                return "edit-address";
+                model.addAttribute(MessageConstants.MESSAGE, this.getMessageSource(MessageConstants.SUCCESS_MESSAGE));
+                model.addAttribute(MessageConstants.ADDRESS, dto);
+                userSession.getCache().remove(MessageConstants.ZIP_CODE);
+                return MessageConstants.EDIT_ADDRESS;
             }else{
                 this.createMessages(model, response);
-                model.addAttribute("address", dto);
+                model.addAttribute(MessageConstants.ADDRESS, dto);
                 return newAddress(userId, model);
             }
         }
@@ -109,13 +110,13 @@ public class AddressRegisterManagerController extends GenericController{
         dto.setId(addressId);
         Response response = this.addressService.update(this.createBearerToken(model), userId, addressId, dto);
         if(response.status() == HttpStatus.NO_CONTENT.value()){
-            model.addAttribute("message", "Atualizado com sucesso.");
+            model.addAttribute(MessageConstants.MESSAGE, this.getMessageSource(MessageConstants.SUCCESS_MESSAGE));
         }else {
             this.createMessages(model, response);
 
         }
-        model.addAttribute("address", dto);
-        return "edit-address";
+        model.addAttribute(MessageConstants.ADDRESS, dto);
+        return MessageConstants.EDIT_ADDRESS;
 
     }
 
@@ -126,8 +127,8 @@ public class AddressRegisterManagerController extends GenericController{
         }
         AddressDto addressDto = this.addressService.find(this.createBearerToken(model), userId, addressId);
         addressDto.setUserId(userId);
-        model.addAttribute("address", addressDto);
-        return "edit-address";
+        model.addAttribute(MessageConstants.ADDRESS, addressDto);
+        return MessageConstants.EDIT_ADDRESS;
     }
 
     @GetMapping("delete-address/{userId}/{addressId}")
@@ -137,10 +138,10 @@ public class AddressRegisterManagerController extends GenericController{
         }
         Response response = this.addressService.delete(this.createBearerToken(model), userId, addressId);
         if(response.status() == HttpStatus.NO_CONTENT.value()){
-            return this.addresses(userId, 0, 24, "publicArea", "ASC", model);
+            return this.addresses(userId, 0, 24, MessageConstants.PUBLICAREA, MessageConstants.ASC, model);
         }else{
-            model.addAttribute("message", "Entre em contato com administrador.");
-            return "error";
+            model.addAttribute(MessageConstants.ERRORMESSAGE, this.getMessageSource(MessageConstants.CONTACT_ADMINISTRATOR));
+            return MessageConstants.ERROR;
         }
     }
 }

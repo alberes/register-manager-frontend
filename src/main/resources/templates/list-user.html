@@ -4,63 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Usuários</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f4f4f4;
-        }
-        .actions button {
-            margin-right: 5px;
-        }
-        a {
-           display: inline-block;
-           margin-bottom: 20px;
-           color: #007bff;
-           text-decoration: none;
-           font-size: 14px;
-       }
-
-       a:hover {
-           text-decoration: underline;
-       }
-
-        .btn {
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-size: 14px;
-            text-decoration: none;
-            text-align: center;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            display: inline-block;
-        }
-
-        .btn-primary {
-            background-color: #007bff;
-            color: #ffffff;
-            border: none;
-        }
-
-        .btn-primary:hover {
-            background-color: #0056b3;
-        }
-
-    </style>
+    <link th:href="@{/styles/listregister.css}" rel="stylesheet">
 </head>
 <body>
 <div>
-    <a class="btn btn-primary" th:href="@{/new-user}">Cadastrar novo usuário</a>
+    <a class="btn btn-primary" th:if="${session.userSession.admin}" th:href="@{/new-user}">Cadastrar novo usuário</a>
 </div>
 <div>
     <a class="btn btn-primary" th:href="@{/login}">Sair</a>
+</div>
+<div class="welcome-container">
+    <h1><span th:text="${session.userSession.userAccountProfileDto.name}">Usuário</span>!</h1>
 </div>
 <h1>Lista de Usuários</h1>
 <table>

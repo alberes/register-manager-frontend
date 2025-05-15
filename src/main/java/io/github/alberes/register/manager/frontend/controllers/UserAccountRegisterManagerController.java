@@ -1,6 +1,7 @@
 package io.github.alberes.register.manager.frontend.controllers;
 
 import feign.Response;
+import io.github.alberes.register.manager.frontend.constants.MessageConstants;
 import io.github.alberes.register.manager.frontend.controllers.dto.*;
 import io.github.alberes.register.manager.frontend.controllers.dto.page.PageReport;
 import io.github.alberes.register.manager.frontend.services.LoginService;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 
 @Controller
-@SessionAttributes("userSession")
+@SessionAttributes(MessageConstants.USER_SESSION)
 public class UserAccountRegisterManagerController extends GenericController{
 
     @Autowired
@@ -25,12 +26,12 @@ public class UserAccountRegisterManagerController extends GenericController{
 
     @GetMapping("/")
     public String index(Model model){
-        return "login";
+        return MessageConstants.LOGIN;
     }
 
     @GetMapping("/login")
     public String home(Model model){
-        return "login";
+        return MessageConstants.LOGIN;
     }
 
     @PostMapping("/login-user")
@@ -40,15 +41,17 @@ public class UserAccountRegisterManagerController extends GenericController{
             try {
                 TokenDto token = null;
                 token = this.objectMapper.readValue(response.body().asInputStream(), TokenDto.class);
-                UserSessionDto userSessionDto = new UserSessionDto(token);
-                model.addAttribute("userSession", userSessionDto);
-                return users(0, 24, "name", "ASC", model);
+                UserAccountProfileDto userAccountProfileDto = this.userAccountService.authenticated("Bearer " + token.token());
+                UserSessionDto userSessionDto = new UserSessionDto(token, userAccountProfileDto);
+                boolean admin = userSessionDto.isAdmin();
+                model.addAttribute(MessageConstants.USER_SESSION, userSessionDto);
+                return users(0, 24, MessageConstants.NAME, MessageConstants.ASC, model);
             } catch (IOException e) {
                 e.printStackTrace();
                 return home(model);
             }
         }else{
-            model.addAttribute("messageInvalidLogin", "Usuário ou senha invalido.");
+            model.addAttribute(MessageConstants.ERRORMESSAGE, this.getMessageSource(MessageConstants.INVALID_LOGIN));
             return home(model);
         }
     }
@@ -58,11 +61,11 @@ public class UserAccountRegisterManagerController extends GenericController{
         if(this.isInvalidSession(model)){
             return home(model);
         }
-        Object user = model.getAttribute("user");
+        Object user = model.getAttribute(MessageConstants.USER);
         if(user == null) {
-            model.addAttribute("user", new UserAccountDto("", "", "", "", ""));
+            model.addAttribute(MessageConstants.USER, new UserAccountDto("", "", "", "", ""));
         }
-        return "new-user";
+        return MessageConstants.NEW_USER;
     }
 
     @PostMapping("/save-user")
@@ -70,18 +73,18 @@ public class UserAccountRegisterManagerController extends GenericController{
         if(this.isInvalidSession(model)){
             return home(model);
         }
-        UserSessionDto userSessionDto = (UserSessionDto)model.getAttribute("userSession");
+        UserSessionDto userSessionDto = (UserSessionDto)model.getAttribute(MessageConstants.USER_SESSION);
         Response response = this.userAccountService.save(this.createBearerToken(model), dto);
         if(response.status() == HttpStatus.CREATED.value()) {
             String id = this.extractId(response);
             return this.editUser(id, model);
         }else{
             if(response.status() == HttpStatus.CONFLICT.value()){
-                model.addAttribute("email", "Email já cadastrado!");
+                model.addAttribute(MessageConstants.USEREMAILCONFLIT, this.getMessageSource(MessageConstants.USER_EMAIL_CONFLIT));
             }else {
                 this.createMessages(model, response);
             }
-            model.addAttribute("user", dto);
+            model.addAttribute(MessageConstants.USER_SESSION, dto);
             return this.newUser(model);
         }
     }
@@ -95,14 +98,13 @@ public class UserAccountRegisterManagerController extends GenericController{
         if(this.isInvalidSession(model)){
             return home(model);
         }
-        UserSessionDto userSessionDto = (UserSessionDto)model.getAttribute("userSession");
+        UserSessionDto userSessionDto = (UserSessionDto)model.getAttribute(MessageConstants.USER_SESSION);
         PageReport<UserAccountReportDto> users = this.userAccountService.allUsers(
                 this.createBearerToken(model),
-                userSessionDto.getToken().id(), page, linesPerPage, orderBy, direction);
-        model.addAttribute("users", users);
-        return "list-user";
+                userSessionDto.getUserAccountProfileDto().getId(), page, linesPerPage, orderBy, direction);
+        model.addAttribute(MessageConstants.USERS, users);
+        return MessageConstants.LIST_USER;
     }
-
 
     @GetMapping("/delete-user/{id}")
     public String deleteUser(@PathVariable String id, Model model){
@@ -111,15 +113,15 @@ public class UserAccountRegisterManagerController extends GenericController{
         }
         Response response = this.userAccountService.delete(this.createBearerToken(model), id);
         if(response.status() == HttpStatus.NO_CONTENT.value()){
-            UserSessionDto userSessionDto = (UserSessionDto)model.getAttribute("userSession");
+            UserSessionDto userSessionDto = (UserSessionDto)model.getAttribute(MessageConstants.USER_SESSION);
             //Owner user deleted hisself
-            if(id.equals(userSessionDto.getToken().id())){
+            if(id.equals(userSessionDto.getUserAccountProfileDto().getId())){
                 return this.home(model);
             }
-            return users(0, 24, "name", "ASC", model);
+            return users(0, 24, MessageConstants.NAME, MessageConstants.ASC, model);
         }else{
-            model.addAttribute("message", "Entre em contato com administrador.");
-            return "error";
+            model.addAttribute(MessageConstants.ERRORMESSAGE, this.getMessageSource(MessageConstants.CONTACT_ADMINISTRATOR));
+            return MessageConstants.ERROR;
         }
     }
 
@@ -129,8 +131,8 @@ public class UserAccountRegisterManagerController extends GenericController{
             return home(model);
         }
         UserAccountDto userAccountDto = this.userAccountService.find(this.createBearerToken(model), id);
-        model.addAttribute("user", userAccountDto);
-        return "edit-user";
+        model.addAttribute(MessageConstants.USER, userAccountDto);
+        return MessageConstants.EDIT_USER;
     }
 
     @PostMapping("/update-user/{id}")
@@ -140,11 +142,15 @@ public class UserAccountRegisterManagerController extends GenericController{
         }
         Response response = this.userAccountService.update(this.createBearerToken(model), id, dto);
         if(response.status() == HttpStatus.NO_CONTENT.value()){
-            model.addAttribute("message", "Atualizado com sucesso.");
+            model.addAttribute(MessageConstants.MESSAGE, this.getMessageSource(MessageConstants.SUCCESS_MESSAGE));
+            return this.editUser(id, model);
+        }else if(response.status() == HttpStatus.BAD_REQUEST.value()){
+            model.addAttribute(MessageConstants.ERRORMESSAGE, this.getMessageSource(MessageConstants.ERROR_MESSAGE));
+            this.createMessages(model, response);
             return this.editUser(id, model);
         }else{
-            model.addAttribute("message", "Entre em contato com administrador.");
-            return "error";
+            model.addAttribute(MessageConstants.ERRORMESSAGE, this.getMessageSource(MessageConstants.CONTACT_ADMINISTRATOR));
+            return MessageConstants.ERROR;
         }
     }
 }

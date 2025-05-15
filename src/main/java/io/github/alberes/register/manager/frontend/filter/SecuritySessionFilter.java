@@ -1,5 +1,6 @@
 package io.github.alberes.register.manager.frontend.filter;
 
+import io.github.alberes.register.manager.frontend.constants.MessageConstants;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,6 +25,9 @@ public class SecuritySessionFilter extends OncePerRequestFilter {
         IGNORED_PATHS.put("/login", "/login");
         IGNORED_PATHS.put("/login-user", "/login-user");
         IGNORED_PATHS.put("/", "/");
+        IGNORED_PATHS.put("/styles/login.css", "/styles/login.css");
+        IGNORED_PATHS.put("/styles/listregister.css", "/styles/listregister.css");
+        IGNORED_PATHS.put("/styles/register.css", "/styles/register.css");
     }
 
     @Override
@@ -31,8 +35,8 @@ public class SecuritySessionFilter extends OncePerRequestFilter {
 
         String requestURI = request.getRequestURI();
         if(!IGNORED_PATHS.containsKey(requestURI)){
-            if(request.getSession(false) == null || request.getSession().getAttribute("userSession") == null) {
-                response.sendRedirect("/login");
+            if(request.getSession(false) == null || request.getSession().getAttribute(MessageConstants.USER_SESSION) == null) {
+                response.sendRedirect(MessageConstants.LOGIN);
             }
         }
         filterChain.doFilter(request, response);

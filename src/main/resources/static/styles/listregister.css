@@ -1,0 +1,59 @@
+table {
+     width: 100%;
+     border-collapse: collapse;
+}
+ th, td {
+     border: 1px solid #ddd;
+     padding: 8px;
+     text-align: left;
+}
+ th {
+     background-color: #f4f4f4;
+}
+ .actions button {
+     margin-right: 5px;
+}
+ a {
+     display: inline-block;
+     margin-bottom: 20px;
+     color: #007bff;
+     text-decoration: none;
+     font-size: 14px;
+}
+ a:hover {
+     text-decoration: underline;
+}
+ .btn {
+     padding: 10px 20px;
+     border-radius: 5px;
+     font-size: 14px;
+     text-decoration: none;
+     text-align: center;
+     cursor: pointer;
+     transition: background-color 0.3s ease;
+     display: inline-block;
+}
+ .btn-primary {
+     background-color: #007bff;
+     color: #ffffff;
+     border: none;
+}
+ .btn-primary:hover {
+     background-color: #0056b3;
+}
+
+.welcome-container {
+    text-align: center;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.welcome-container h1 {
+    font-size: 2.5rem;
+    color: #007bff;
+}
+.welcome-container p {
+    font-size: 1.2rem;
+    margin-top: 10px;
+}

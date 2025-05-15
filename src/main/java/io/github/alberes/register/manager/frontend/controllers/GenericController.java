@@ -2,12 +2,14 @@ package io.github.alberes.register.manager.frontend.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.Response;
+import io.github.alberes.register.manager.frontend.constants.MessageConstants;
 import io.github.alberes.register.manager.frontend.controllers.dto.UserSessionDto;
 import io.github.alberes.register.manager.frontend.controllers.exceptions.FieldErroDto;
 import io.github.alberes.register.manager.frontend.controllers.exceptions.StandardErrorDto;
-import org.springframework.stereotype.Controller;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.io.IOException;
 import java.net.URI;
@@ -18,19 +20,23 @@ public abstract class GenericController {
 
     ObjectMapper objectMapper = new ObjectMapper();
 
+    @Autowired
+    private MessageSource messageSource;
+
+
     public boolean isInvalidSession(Model model){
-        model.addAttribute("messageSessionTimeout", "Sessão expirada, fazer o login novamente!");
-        return model.getAttribute("userSession") == null;
+        model.addAttribute(MessageConstants.SESSIONTIMEOUT, this.getMessageSource(MessageConstants.SESSION_TIMEOUT));
+        return model.getAttribute(MessageConstants.USER_SESSION) == null;
     }
 
     public String createBearerToken(Model model){
-        UserSessionDto userSessionDto = (UserSessionDto)model.getAttribute("userSession");
-        return "Bearer " + userSessionDto.getToken().token();
+        UserSessionDto userSessionDto = (UserSessionDto)model.getAttribute(MessageConstants.USER_SESSION);
+        return MessageConstants.BEARER + userSessionDto.getToken().token();
     }
 
     public URI createURI(Response response){
         URI uri = null;
-        Collection<String> header = response.headers().get("location");
+        Collection<String> header = response.headers().get(MessageConstants.LOCATION);
         String location = "";
         for(String l : header){
             location = l;
@@ -54,7 +60,7 @@ public abstract class GenericController {
 
     public void createMessages(Model model, Response response){
         StandardErrorDto standardErrorDto = this.toStandardErrorDto(response);
-        model.addAttribute("error", standardErrorDto);
+        model.addAttribute(MessageConstants.ERROR, standardErrorDto);
         if (!standardErrorDto.getFields().isEmpty()) {
             for (FieldErroDto f : standardErrorDto.getFields()) {
                 model.addAttribute(f.field(), f.message());
@@ -64,8 +70,12 @@ public abstract class GenericController {
 
     public String extractId(Response response){
         URI uri = this.createURI(response);
-        String[] path = uri.getPath().split("/");
+        String[] path = uri.getPath().split(MessageConstants.SLASH);
         String id = path[path.length - 1];
         return id;
+    }
+
+    public String getMessageSource(String messageId){
+        return this.messageSource.getMessage(messageId, null, LocaleContextHolder.getLocale());
     }
 }

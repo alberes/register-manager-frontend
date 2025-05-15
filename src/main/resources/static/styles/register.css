@@ -1,0 +1,169 @@
+
+/* Estilo geral */
+ body {
+     font-family: 'Arial', sans-serif;
+     background-color: #f4f4f9;
+     margin: 0;
+     padding: 0;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     height: 100vh;
+}
+/* Container principal */
+ .container {
+     background-color: #ffffff;
+     padding: 30px 40px;
+     border-radius: 10px;
+     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+     width: 100%;
+     max-width: 500px;
+     box-sizing: border-box;
+     text-align: center;
+}
+/* Título */
+ h1 {
+     font-size: 24px;
+     color: #333333;
+     margin-bottom: 20px;
+}
+/* Grupo de formulário */
+ .form-group {
+     margin-bottom: 20px;
+     text-align: left;
+}
+/* Rótulos */
+ label {
+     display: block;
+     font-size: 14px;
+     margin-bottom: 5px;
+     color: #555555;
+}
+/* Campos de entrada */
+ input[type="text"], input[type="email"], input[type="number"], input[type="password"] {
+     width: 100%;
+     padding: 10px;
+     border: 1px solid #cccccc;
+     border-radius: 5px;
+     font-size: 14px;
+     color: #333333;
+     box-sizing: border-box;
+}
+ input[type="text"]:focus, input[type="email"]:focus, input[type="number"]:focus, input[type="password"]:focus {
+     outline: none;
+     border-color: #007bff;
+     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+/* Botões */
+ .form-actions {
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     margin-top: 20px;
+}
+ .btn {
+     padding: 10px 20px;
+     border-radius: 5px;
+     font-size: 14px;
+     text-decoration: none;
+     text-align: center;
+     cursor: pointer;
+     transition: background-color 0.3s ease;
+     display: inline-block;
+}
+ .btn-primary {
+     background-color: #007bff;
+     color: #ffffff;
+     border: none;
+}
+ .btn-primary:hover {
+     background-color: #0056b3;
+}
+ .btn-secondary {
+     background-color: #6c757d;
+     color: #ffffff;
+     border: none;
+}
+ .btn-secondary:hover {
+     background-color: #FF0000;
+}
+ a {
+     display: inline-block;
+     margin-bottom: 20px;
+     color: #007bff;
+     text-decoration: none;
+     font-size: 14px;
+}
+ a:hover {
+     text-decoration: underline;
+}
+/* Estilo para destacar mensagens de sucesso */
+ p.success-message {
+     color: #28a745;
+    /* Cor verde para indicar sucesso */
+     background-color: #d4edda;
+    /* Fundo verde claro */
+     border: 1px solid #c3e6cb;
+    /* Borda verde */
+     padding: 10px 15px;
+    /* Espaçamento interno */
+     border-radius: 5px;
+    /* Bordas arredondadas */
+     font-size: 16px;
+    /* Tamanho da fonte */
+     font-weight: bold;
+    /* Texto em negrito */
+     text-align: center;
+    /* Centraliza o texto */
+     width: 100%;
+    /* Largura total */
+     max-width: 400px;
+    /* Largura máxima */
+     margin: 20px auto;
+    /* Centraliza horizontalmente e adiciona espaçamento vertical */
+     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* Sombra para destacar */
+}
+/* Classe para destacar mensagens de erro */
+ p.error-message {
+     color: #dc3545;
+    /* Cor vermelha para o texto */
+     background-color: #f8d7da;
+    /* Fundo vermelho claro */
+     border: 1px solid #f5c6cb;
+    /* Borda vermelha clara */
+     padding: 10px 15px;
+    /* Espaçamento interno */
+     border-radius: 5px;
+    /* Bordas arredondadas */
+     font-size: 16px;
+    /* Tamanho da fonte */
+     font-weight: bold;
+    /* Texto em negrito */
+     text-align: center;
+    /* Centraliza o texto */
+     width: 100%;
+    /* Largura total */
+     max-width: 400px;
+    /* Largura máxima */
+     margin: 20px auto;
+    /* Centraliza horizontalmente e adiciona espaçamento vertical */
+     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* Sombra para destacar */
+}
+
+.welcome-container {
+    text-align: center;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.welcome-container h1 {
+    font-size: 2.5rem;
+    color: #007bff;
+}
+.welcome-container p {
+    font-size: 1.2rem;
+    margin-top: 10px;
+}
