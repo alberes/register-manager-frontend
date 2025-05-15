@@ -117,6 +117,9 @@ public class PageReport<T> {
     }
 
     public int getLastPageNumber(){
+        if(this.getTotalPages() > 0){
+            return this.getTotalPages() - 1;
+        }
         return this.getTotalPages();
     }
 
