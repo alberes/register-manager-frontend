@@ -84,7 +84,7 @@ public class UserAccountRegisterManagerController extends GenericController{
             }else {
                 this.createMessages(model, response);
             }
-            model.addAttribute(MessageConstants.USER_SESSION, dto);
+            model.addAttribute(MessageConstants.USER, dto);
             return this.newUser(model);
         }
     }
