@@ -9,7 +9,9 @@
 <body>
 <div class="error-container">
     <p th:text="${errorMessage}">Algo deu errado. Por favor, tente novamente mais tarde.</p>
-    <a th:href="@{/users(page=0, linesPerPage=24, orderBy=name, direction=ASC)}">Voltar para a página inicial</a>
+    <a class="btn btn-primary" th:href="@{/users(page=0, linesPerPage=24, orderBy=name, direction=ASC)}">
+        Voltar a página inicial
+    </a>
 </div>
 </body>
 </html>

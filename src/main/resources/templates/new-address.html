@@ -34,7 +34,7 @@
         <div  th:if="!${address.isNewRegister}">
             <label for="complemento">Complemento:</label>
             <p class="error-message" th:if="${additionalAddress}" th:text="${additionalAddress}"></p>
-            <input type="text" id="additionalAddress" name="additionalAddress" th:value="${address.additionalAddress}" required minlength="5" maxlength="100" placeholder="Digite o complemento">
+            <input type="text" id="additionalAddress" name="additionalAddress" th:value="${address.additionalAddress}" minlength="5" maxlength="100" placeholder="Digite o complemento">
         </div>
         <div  th:if="!${address.isNewRegister}">
             <label for="bairro">Bairro:</label>
