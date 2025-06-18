@@ -20,19 +20,61 @@
     <thead>
     <tr>
         <th>
-            <div th:object="${addresses}">
-                <a th:href="@{/addresses/{userId}(userId=${userId}, page=${addresses.firstPageNumber}, linesPerPage=${addresses.size}, orderBy=publicArea, direction=${addresses.direction})}">Logradouro</a>
-            </div>
+            Logradouro
+            <span class="sort-icons">
+                <span class="sort-icon" title="Ordenar Ascendente">
+                    <a th:href="@{/addresses/{userId}(userId=${userId}, page=${addresses.firstPageNumber}, linesPerPage=${addresses.size}, orderBy=publicArea, direction=ASC)}">
+                        <svg class="sort-icon" viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                            <path d="M12 7l-5 5h10z"/>
+                        </svg>
+                    </a>
+                </span>
+                <span class="sort-icon" title="Ordenar Descendente">
+                    <a th:href="@{/addresses/{userId}(userId=${userId}, page=${addresses.firstPageNumber}, linesPerPage=${addresses.size}, orderBy=publicArea, direction=DESC)}">
+                        <svg class="sort-icon" viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                            <path d="M12 17l5-5H7z"/>
+                        </svg>
+                    </a>
+                </span>
+            </span>
         </th>
         <th>
-            <div th:object="${addresses}">
-                <a th:href="@{/addresses/{userId}(userId=${userId}, page=${addresses.firstPageNumber}, linesPerPage=${addresses.size}, orderBy=city, direction=${addresses.direction})}">Cidade</a>
-            </div>
+            Cidade
+            <span class="sort-icons">
+                <span class="sort-icon" title="Ordenar Ascendente">
+                    <a th:href="@{/addresses/{userId}(userId=${userId}, page=${addresses.firstPageNumber}, linesPerPage=${addresses.size}, orderBy=city, direction=ASC)}">
+                        <svg class="sort-icon" viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                            <path d="M12 7l-5 5h10z"/>
+                        </svg>
+                    </a>
+                </span>
+                <span class="sort-icon" title="Ordenar Descendente">
+                    <a th:href="@{/addresses/{userId}(userId=${userId}, page=${addresses.firstPageNumber}, linesPerPage=${addresses.size}, orderBy=city, direction=DESC)}">
+                        <svg class="sort-icon" viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                            <path d="M12 17l5-5H7z"/>
+                        </svg>
+                    </a>
+                </span>
+            </span>
         </th>
         <th>
-            <div th:object="${addresses}">
-                <a th:href="@{/addresses/{userId}(userId=${userId}, page=${addresses.firstPageNumber}, linesPerPage=${addresses.size}, orderBy=state, direction=${addresses.direction})}">Estado</a>
-            </div>
+            Estado
+            <span class="sort-icons">
+                <span class="sort-icon" title="Ordenar Ascendente">
+                    <a th:href="@{/addresses/{userId}(userId=${userId}, page=${addresses.firstPageNumber}, linesPerPage=${addresses.size}, orderBy=state, direction=ASC)}">
+                        <svg class="sort-icon" viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                            <path d="M12 7l-5 5h10z"/>
+                        </svg>
+                    </a>
+                </span>
+                <span class="sort-icon" title="Ordenar Descendente">
+                    <a th:href="@{/addresses/{userId}(userId=${userId}, page=${addresses.firstPageNumber}, linesPerPage=${addresses.size}, orderBy=state, direction=DESC)}">
+                        <svg class="sort-icon" viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                            <path d="M12 17l5-5H7z"/>
+                        </svg>
+                    </a>
+                </span>
+            </span>
         </th>
         <th>
             <div th:object="${addresses}">
@@ -60,11 +102,11 @@
     </tr>
     </tbody>
 </table>
-</body>
-<div th:object="${addresses}" th:if="${addresses.totalPages > 1}">
+<div th:object="${addresses}" th:if="${addresses.totalPages > 1}" class="pagination">
     <a th:href="@{/addresses/{userId}(userId=${userId}, page=${addresses.firstPageNumber}, linesPerPage=${addresses.size}, orderBy=${addresses.orderBy}, direction=${addresses.direction})}">Primeiro</a>
     <a th:href="@{/addresses/{userId}(userId=${userId}, page=${addresses.nextPageNumber}, linesPerPage=${addresses.size}, orderBy=${addresses.orderBy}, direction=${addresses.direction})}">Próximo</a>
     <a th:href="@{/addresses/{userId}(userId=${userId}, page=${addresses.previousPageNumber}, linesPerPage=${addresses.size}, orderBy=${addresses.orderBy}, direction=${addresses.direction})}">Anteior</a>
     <a th:href="@{/addresses/{userId}(userId=${userId}, page=${addresses.lastPageNumber}, linesPerPage=${addresses.size}, orderBy=${addresses.orderBy}, direction=${addresses.direction})}">Último</a>
 </div>
+</body>
 </html>

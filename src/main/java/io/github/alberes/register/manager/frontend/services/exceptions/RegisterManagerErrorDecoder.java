@@ -26,7 +26,7 @@ public class RegisterManagerErrorDecoder implements ErrorDecoder{
             body = e.getMessage();
         }
 
-        return new ResponseStatusException(
+            return new ResponseStatusException(
                 HttpStatus.valueOf(response.status()),
                 body);
     }

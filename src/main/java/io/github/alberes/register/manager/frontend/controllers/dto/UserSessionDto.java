@@ -1,10 +1,9 @@
 package io.github.alberes.register.manager.frontend.controllers.dto;
 
-import io.github.alberes.register.manager.frontend.constants.MessageConstants;
+import io.github.alberes.register.manager.frontend.constants.Constants;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 public class UserSessionDto {
 
@@ -49,7 +48,7 @@ public class UserSessionDto {
     public boolean isAdmin(){
         return this.userAccountProfileDto.getProfiles()
                 .stream()
-                .filter(p -> MessageConstants.ADMIN.equals(p))
+                .filter(p -> Constants.ADMIN.equals(p))
                 .findFirst()
                 .isPresent();
     }

@@ -1,6 +1,6 @@
 package io.github.alberes.register.manager.frontend.filter;
 
-import io.github.alberes.register.manager.frontend.constants.MessageConstants;
+import io.github.alberes.register.manager.frontend.constants.Constants;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,13 +10,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 @Component
 public class SecuritySessionFilter extends OncePerRequestFilter {
-
-    //private static final String IGNORED_PATH = "/login-user";
 
     private static Map<String, String> IGNORED_PATHS;
 
@@ -35,8 +32,8 @@ public class SecuritySessionFilter extends OncePerRequestFilter {
 
         String requestURI = request.getRequestURI();
         if(!IGNORED_PATHS.containsKey(requestURI)){
-            if(request.getSession(false) == null || request.getSession().getAttribute(MessageConstants.USER_SESSION) == null) {
-                response.sendRedirect(MessageConstants.LOGIN);
+            if(request.getSession(false) == null || request.getSession().getAttribute(Constants.USER_SESSION) == null) {
+                response.sendRedirect(Constants.LOGIN);
             }
         }
         filterChain.doFilter(request, response);

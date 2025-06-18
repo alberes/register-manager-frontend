@@ -1,6 +1,9 @@
 package io.github.alberes.register.manager.frontend.constants;
 
-public interface MessageConstants {
+import java.util.List;
+import java.util.Set;
+
+public interface Constants {
 
     public static final String ADDRESSES = "addresses";
     public static final String USERID = "userId";
@@ -27,12 +30,18 @@ public interface MessageConstants {
     public static final String LOGIN = "login";
     public static final String NAME = "name";
     public static final String ADMIN = "ADMIN";
+    public static final String PROFILES = "profiles";
+    public static final List<String> PROFILES_LIST = List.of("ADMIN", "USER");
     public static final String INVALID_LOGIN = "invalid.login";
     public static final String USER = "user";
     public static final String USERS = "users";
     public static final String NEW_USER = "new-user";
+    public static final String ADDRESS_NOT_FIND = "address.not.find";
     public static final String LIST_USER = "list-user";
     public static final String EDIT_USER = "edit-user";
     public static final String USEREMAILCONFLIT = "userEmailConflit";
     public static final String USER_EMAIL_CONFLIT = "user.email.conflit";
+    public static final String APP_NAME = "app-name";
+    public static final String REGISTER_MAMANER_FRONTEND = "register-mamaner-frontend";
+    public static final Set<String> HEADERS_TO_REMOVE = Set.of("host", "content-length", "content-type", "accept");
 }

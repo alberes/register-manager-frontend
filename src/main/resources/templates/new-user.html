@@ -15,26 +15,32 @@
     </div>
     <h1>Cadastrar Usuário</h1>
     <form th:action="@{/save-user}" method="post">
-        <div>
+        <div class="field">
             <label for="name">Nome:</label>
             <p class="error-message" th:if="${name}" th:text="${name}"></p>
             <input type="text" id="name" name="name" th:value="${user.name}" required min="10" maxlength="100" placeholder="Digite seu nome">
         </div>
-        <div>
+        <div class="field">
             <label for="email">E-Mail:</label>
             <p class="error-message" th:if="${email}" th:text="${email}"></p>
             <p class="error-message" th:if="${userEmailConflit}" th:text="${userEmailConflit}"></p>
             <input type="text" id="email" name="email" th:value="${user.email}" required minlength="4" maxlength="100" placeholder="Digite seu email">
         </div>
-        <div>
+        <div class="field">
             <label for="password">Senha:</label>
             <p class="error-message" th:if="${password}" th:text="${password}"></p>
             <input type="password" id="password" name="password" th:value="${user.password}" required minlength="8" maxlength="20" placeholder="Digite sua senha">
         </div>
-        <div>
+        <div class="field field-select">
             <label for="role">Role:</label>
             <p class="error-message" th:if="${role}" th:text="${role}"></p>
-            <input type="text" id="role" name="role" th:value="${user.role}" required minlength="4" maxlength="20" placeholder="Digite sua role">
+            <select id="role" name="role" required>
+                <option value="" disabled>Escolha uma opção</option>
+                <option th:each="profile : ${profiles}"
+                        th:value="${profile}"
+                        th:text="${profile}">
+                </option>
+            </select>
         </div>
         <div><br><br>
             <button type="submit" class="btn btn-primary">Cadastrar</button>

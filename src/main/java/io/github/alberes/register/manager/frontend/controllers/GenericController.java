@@ -2,7 +2,7 @@ package io.github.alberes.register.manager.frontend.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.Response;
-import io.github.alberes.register.manager.frontend.constants.MessageConstants;
+import io.github.alberes.register.manager.frontend.constants.Constants;
 import io.github.alberes.register.manager.frontend.controllers.dto.UserSessionDto;
 import io.github.alberes.register.manager.frontend.controllers.exceptions.FieldErroDto;
 import io.github.alberes.register.manager.frontend.controllers.exceptions.StandardErrorDto;
@@ -25,18 +25,18 @@ public abstract class GenericController {
 
 
     public boolean isInvalidSession(Model model){
-        model.addAttribute(MessageConstants.SESSIONTIMEOUT, this.getMessageSource(MessageConstants.SESSION_TIMEOUT));
-        return model.getAttribute(MessageConstants.USER_SESSION) == null;
+        model.addAttribute(Constants.SESSIONTIMEOUT, this.getMessageSource(Constants.SESSION_TIMEOUT));
+        return model.getAttribute(Constants.USER_SESSION) == null;
     }
 
     public String createBearerToken(Model model){
-        UserSessionDto userSessionDto = (UserSessionDto)model.getAttribute(MessageConstants.USER_SESSION);
-        return MessageConstants.BEARER + userSessionDto.getToken().token();
+        UserSessionDto userSessionDto = (UserSessionDto)model.getAttribute(Constants.USER_SESSION);
+        return Constants.BEARER + userSessionDto.getToken().token();
     }
 
     public URI createURI(Response response){
         URI uri = null;
-        Collection<String> header = response.headers().get(MessageConstants.LOCATION);
+        Collection<String> header = response.headers().get(Constants.LOCATION);
         String location = "";
         for(String l : header){
             location = l;
@@ -60,7 +60,7 @@ public abstract class GenericController {
 
     public void createMessages(Model model, Response response){
         StandardErrorDto standardErrorDto = this.toStandardErrorDto(response);
-        model.addAttribute(MessageConstants.ERROR, standardErrorDto);
+        model.addAttribute(Constants.ERROR, standardErrorDto);
         if (!standardErrorDto.getFields().isEmpty()) {
             for (FieldErroDto f : standardErrorDto.getFields()) {
                 model.addAttribute(f.field(), f.message());
@@ -70,7 +70,7 @@ public abstract class GenericController {
 
     public String extractId(Response response){
         URI uri = this.createURI(response);
-        String[] path = uri.getPath().split(MessageConstants.SLASH);
+        String[] path = uri.getPath().split(Constants.SLASH);
         String id = path[path.length - 1];
         return id;
     }

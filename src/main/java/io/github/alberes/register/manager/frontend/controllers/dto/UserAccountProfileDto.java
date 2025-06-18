@@ -50,4 +50,11 @@ public class UserAccountProfileDto{
     public void setProfiles(Set<String> profiles) {
         this.profiles = profiles;
     }
+
+    public String getProfile(){
+        if(this.profiles == null || this.profiles.isEmpty()){
+            return "";
+        }
+        return String.join(" - ", this.profiles);
+    }
 }

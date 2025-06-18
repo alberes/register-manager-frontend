@@ -1,63 +1,114 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Usuários</title>
-    <link th:href="@{/styles/listregister.css}" rel="stylesheet">
-</head>
-<body>
-<div>
-    <a class="btn btn-primary" th:if="${session.userSession.admin}" th:href="@{/new-user}">Cadastrar novo usuário</a>
-</div>
-<div>
-    <a class="btn btn-primary" th:href="@{/login}">Sair</a>
-</div>
-<div class="welcome-container">
-    <h1><span th:text="${session.userSession.userAccountProfileDto.name}">Usuário</span>!</h1>
-</div>
-<h1>Lista de Usuários</h1>
-<table>
-    <thead>
-    <tr>
-        <th>
-            <div th:object="${users}">
-                <a th:href="@{/users(page=${users.firstPageNumber}, linesPerPage=${users.size}, orderBy=name, direction=${users.direction})}">Nome</a>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Lista de Usuários</title>
+        <link th:href="@{/styles/listregister.css}" rel="stylesheet">
+        <link th:href="@{/styles/profile.css}" rel="stylesheet">
+        <script th:src="@{/js/profile.js}"></script>.
+    </head>
+    <body>
+        <div class="profile-container">
+            <div class="profile-header" onclick="toggleProfileDetails()">
+                <div class="profile-avatar" id="profileAvatar">JD</div>
+                <div class="profile-name" id="profileName" th:text="${session.userSession.userAccountProfileDto.name}"></div>
             </div>
-        </th>
-        <th>
-            <div th:object="${users}">
-                <a th:href="@{/users(page=${users.firstPageNumber}, linesPerPage=${users.size}, orderBy=email, direction=${users.direction})}">E-Mail</a>
+            <div class="profile-details" id="profileDetails">
+                <div>
+                    <p><strong>Email:</strong><p th:text="${session.userSession.userAccountProfileDto.email}"></p></p>
+                    <p><strong>Perfil:</strong><p th:text="${session.userSession.userAccountProfileDto.profile}"></p></p>
+                    <p><a class="btn btn-primary" th:if="${session.userSession.admin}" th:href="@{/new-user}">Cadastrar novo usuário</a></p>
+                    <p><a class="btn btn-primary" th:href="@{/login}">Sair</a></p>
+                </div>
             </div>
-        </th>
-        <th>
-            <div th:object="${users}">
-                <a th:href="@{/users(page=${users.firstPageNumber}, linesPerPage=${users.size}, orderBy=createdDate, direction=${users.direction})}">Data</a>
-            </div>
-        </th>
-        <th>Endereços</th>
-        <th>Ação</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="user : ${users.content}">
-        <td th:text="${user.name}"></td>
-        <td th:text="${user.email}"></td>
-        <td th:text="${user.createdDate}"></td>
-        <td>
-            <a class="btn btn-primary" th:href="@{/addresses/{userId}(userId=${user.id}, page=0, linesPerPage=10, orderBy=publicArea, direction=ASC)}">Endereços</a>
-        </td>
-        <td class="actions">
-            <a class="btn btn-primary" th:href="@{/edit-user/{id}(id=${user.id})}">Editar</a>
-        </td>
-    </tr>
-    </tbody>
-</table>
-</body>
-<div th:object="${users}" th:if="${users.totalPages > 1}">
-    <a th:href="@{/users(page=${users.firstPageNumber}, linesPerPage=${users.size}, orderBy=${users.orderBy}, direction=${users.direction})}">Primeiro</a>
-    <a th:href="@{/users(page=${users.nextPageNumber}, linesPerPage=${users.size}, orderBy=${users.orderBy}, direction=${users.direction})}">Próximo</a>
-    <a th:href="@{/users(page=${users.previousPageNumber}, linesPerPage=${users.size}, orderBy=${users.orderBy}, direction=${users.direction})}">Anteior</a>
-    <a th:href="@{/users(page=${users.lastPageNumber}, linesPerPage=${users.size}, orderBy=${users.orderBy}, direction=${users.direction})}">Último</a>
-</div>
+        </div>
+        <h1>Lista de Usuários</h1>
+        <div class="table-container">
+        <table>
+            <thead>
+            <tr>
+                <th class="sortable">
+                    Nome
+                    <span class="sort-icons">
+                        <span class="sort-icon" title="Ordenar Ascendente">
+                            <a th:href="@{/users(page=${users.firstPageNumber}, linesPerPage=${users.size}, orderBy=name, direction=ASC)}">
+                                <svg class="sort-icon" viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                                    <path d="M12 7l-5 5h10z"/>
+                                </svg>
+                            </a>
+                        </span>
+                        <span class="sort-icon" title="Ordenar Descendente">
+                            <a th:href="@{/users(page=${users.firstPageNumber}, linesPerPage=${users.size}, orderBy=name, direction=DESC)}">
+                                <svg class="sort-icon" viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                                    <path d="M12 17l5-5H7z"/>
+                                </svg>
+                            </a>
+                        </span>
+                    </span>
+                </th>
+                <th>
+                    E-Mail
+                    <span class="sort-icons">
+                        <span class="sort-icon" title="Ordenar Ascendente">
+                            <a th:href="@{/users(page=${users.firstPageNumber}, linesPerPage=${users.size}, orderBy=email, direction=ASC)}">
+                                <svg class="sort-icon" viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                                    <path d="M12 7l-5 5h10z"/>
+                                </svg>
+                            </a>
+                        </span>
+                        <span class="sort-icon" title="Ordenar Descendente">
+                            <a th:href="@{/users(page=${users.firstPageNumber}, linesPerPage=${users.size}, orderBy=email, direction=DESC)}">
+                                <svg class="sort-icon" viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                                    <path d="M12 17l5-5H7z"/>
+                                </svg>
+                            </a>
+                        </span>
+                    </span>
+                </th>
+                <th>
+                    Data
+                    <span class="sort-icons">
+                        <span class="sort-icon" title="Ordenar Ascendente">
+                            <a th:href="@{/users(page=${users.firstPageNumber}, linesPerPage=${users.size}, orderBy=createdDate, direction=ASC)}">
+                                <svg class="sort-icon" viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                                    <path d="M12 7l-5 5h10z"/>
+                                </svg>
+                            </a>
+                        </span>
+                        <span class="sort-icon" title="Ordenar Descendente">
+                            <a th:href="@{/users(page=${users.firstPageNumber}, linesPerPage=${users.size}, orderBy=createdDate, direction=DESC)}">
+                                <svg class="sort-icon" viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                                    <path d="M12 17l5-5H7z"/>
+                                </svg>
+                            </a>
+                        </span>
+                    </span>
+                </th>
+                <th>Endereços</th>
+                <th>Ação</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user : ${users.content}">
+                <td th:text="${user.name}"></td>
+                <td th:text="${user.email}"></td>
+                <td th:text="${#temporals.format(user.createdDate, 'dd/MM/yyyy HH:mm:ss')}"></td>
+                <td>
+                    <a class="btn btn-primary" th:href="@{/addresses/{userId}(userId=${user.id}, page=0, linesPerPage=10, orderBy=publicArea, direction=ASC)}">Endereços</a>
+                </td>
+                <td class="actions">
+                    <a class="btn btn-primary" th:href="@{/edit-user/{id}(id=${user.id})}">Editar</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        </div>
+        <div th:object="${users}" th:if="${users.totalPages > 1}" class="pagination">
+            <a th:href="@{/users(page=${users.firstPageNumber}, linesPerPage=${users.size}, orderBy=${users.orderBy}, direction=${users.direction})}">Primeiro</a>
+            <a th:href="@{/users(page=${users.nextPageNumber}, linesPerPage=${users.size}, orderBy=${users.orderBy}, direction=${users.direction})}">Próximo</a>
+            <a th:href="@{/users(page=${users.previousPageNumber}, linesPerPage=${users.size}, orderBy=${users.orderBy}, direction=${users.direction})}">Anteior</a>
+            <a th:href="@{/users(page=${users.lastPageNumber}, linesPerPage=${users.size}, orderBy=${users.orderBy}, direction=${users.direction})}">Último</a>
+        </div>
+    </body>
 </html>

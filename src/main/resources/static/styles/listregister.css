@@ -57,3 +57,100 @@ table {
     font-size: 1.2rem;
     margin-top: 10px;
 }
+
+
+
+
+
+
+/* Estilo para tabela */
+.table-container {
+    width: 100%;
+    margin: 30px auto;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+}
+
+th, td {
+    padding: 12px 18px;
+    text-align: left;
+}
+
+th {
+    background: #007bff;
+    color: #fff;
+    font-size: 1.1rem;
+    position: relative;
+}
+
+th.sortable {
+    cursor: pointer;
+    user-select: none;
+}
+
+.sort-icons {
+    display: inline-flex;
+    flex-direction: column;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+.sort-icon {
+    width: 16px;
+    height: 16px;
+    color: #fff;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.sort-icon:hover {
+    opacity: 1;
+}
+
+.sort-icon.active {
+    color: #ffc107;
+    opacity: 1;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin: 24px 0;
+}
+
+.pagination a,
+.pagination span {
+    padding: 6px 14px;
+    border-radius: 4px;
+    background: #f8f9fa;
+    color: #007bff;
+    text-decoration: none;
+    border: 1px solid #dee2e6;
+    font-size: 1rem;
+    transition: background 0.2s, color 0.2s;
+    cursor: pointer;
+}
+
+.pagination a:hover {
+    background: #007bff;
+    color: #fff;
+}
+
+.pagination .active,
+.pagination .disabled {
+    background: #e9ecef;
+    color: #adb5bd;
+    border-color: #dee2e6;
+    cursor: default;
+    pointer-events: none;
+}

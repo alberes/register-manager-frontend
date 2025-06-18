@@ -1,7 +1,7 @@
 package io.github.alberes.register.manager.frontend.controllers;
 
 import feign.Response;
-import io.github.alberes.register.manager.frontend.constants.MessageConstants;
+import io.github.alberes.register.manager.frontend.constants.Constants;
 import io.github.alberes.register.manager.frontend.controllers.dto.AddressDto;
 import io.github.alberes.register.manager.frontend.controllers.dto.AddressReportDto;
 import io.github.alberes.register.manager.frontend.controllers.dto.UserSessionDto;
@@ -12,11 +12,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 
 @Controller
-@SessionAttributes(MessageConstants.USER_SESSION)
+@SessionAttributes(Constants.USER_SESSION)
 public class AddressRegisterManagerController extends GenericController{
 
     @Autowired
@@ -24,7 +25,7 @@ public class AddressRegisterManagerController extends GenericController{
 
     @GetMapping("/login-address")
     public String home(Model model){
-        return "login";
+        return Constants.LOGIN;
     }
 
     @GetMapping("/addresses/{userId}")
@@ -43,9 +44,9 @@ public class AddressRegisterManagerController extends GenericController{
             addresses = new PageReport<AddressReportDto>();
             addresses.setContent(new ArrayList<AddressReportDto>());
         }
-        model.addAttribute(MessageConstants.ADDRESSES, addresses);
-        model.addAttribute(MessageConstants.USERID, userId);
-        return MessageConstants.LIST_ADDRESS;
+        model.addAttribute(Constants.ADDRESSES, addresses);
+        model.addAttribute(Constants.USERID, userId);
+        return Constants.LIST_ADDRESS;
     }
 
     @GetMapping("new-address/{userId}")
@@ -53,49 +54,62 @@ public class AddressRegisterManagerController extends GenericController{
         if(this.isInvalidSession(model)){
             return home(model);
         }
-        Object address = model.getAttribute(MessageConstants.ADDRESS);
+        Object address = model.getAttribute(Constants.ADDRESS);
         if(address == null) {
             AddressDto dto = new AddressDto();
             dto.setUserId(userId);
             dto.setNewRegister(true);
-            model.addAttribute(MessageConstants.ADDRESS, dto);        }
-        return MessageConstants.NEW_ADDRESS;
+            model.addAttribute(Constants.ADDRESS, dto);        }
+        return Constants.NEW_ADDRESS;
     }
 
     @PostMapping("save-address/{userId}")
     public String saveAddress(@PathVariable String userId, @RequestParam boolean isNewRegister, AddressDto dto, Model model){
+        AddressDto addressDto = null;
+        boolean successSearchAddress = true;
         if(this.isInvalidSession(model)){
             return home(model);
         }
-        UserSessionDto userSession = (UserSessionDto)model.getAttribute(MessageConstants.USER_SESSION);
+        UserSessionDto userSession = (UserSessionDto)model.getAttribute(Constants.USER_SESSION);
         if(isNewRegister){
-            AddressDto addressDto = this.addressService.searchZipcode(this.createBearerToken(model), userId, dto.getZipCode());
-            addressDto.setZipCode(dto.getZipCode());
-            if(addressDto.getPublicArea() == null){
-                model.addAttribute(MessageConstants.ERRORMESSAGE, this.getMessageSource("address.not.find"));
-            }else {
+            try {
+                addressDto = this.addressService.searchZipcode(this.createBearerToken(model), userId, dto.getZipCode());
+            }catch (ResponseStatusException responseStatusException){
+                successSearchAddress = false;
+                responseStatusException.printStackTrace();
+            }
+            if(successSearchAddress){
                 addressDto.setNewRegister(false);
                 addressDto.setUserId(userId);
-                userSession.getCache().put(MessageConstants.ZIP_CODE, addressDto.getZipCode());
-                model.addAttribute(MessageConstants.ADDRESS, addressDto);            }
+                addressDto.setZipCode(dto.getZipCode());
+                userSession.getCache().put(Constants.ZIP_CODE, addressDto.getZipCode());
+                model.addAttribute(Constants.ADDRESS, addressDto);
+            }else {
+                addressDto = new AddressDto();
+                addressDto.setNewRegister(true);
+                addressDto.setZipCode(dto.getZipCode());
+                successSearchAddress = false;
+                model.addAttribute(Constants.ADDRESS, addressDto);
+                model.addAttribute(Constants.ERRORMESSAGE, this.getMessageSource(Constants.ADDRESS_NOT_FIND));
+            }
             return newAddress(userId, model);
         }else{
-            String zipCode = (String) userSession.getCache().get(MessageConstants.ZIP_CODE);
+            String zipCode = (String) userSession.getCache().get(Constants.ZIP_CODE);
             if(!dto.getZipCode().equals(zipCode)){
-                model.addAttribute(MessageConstants.ERRORMESSAGE, this.getMessageSource(MessageConstants.ZIPCODE_CHANGED));
+                model.addAttribute(Constants.ERRORMESSAGE, this.getMessageSource(Constants.ZIPCODE_CHANGED));
                 return newAddress(userId, model);
             }
             Response response = this.addressService.save(this.createBearerToken(model), userId,  dto);
             if(response.status() == HttpStatus.CREATED.value()){
                 String id = this.extractId(response);
                 dto.setId(id);
-                model.addAttribute(MessageConstants.MESSAGE, this.getMessageSource(MessageConstants.SUCCESS_MESSAGE));
-                model.addAttribute(MessageConstants.ADDRESS, dto);
-                userSession.getCache().remove(MessageConstants.ZIP_CODE);
-                return MessageConstants.EDIT_ADDRESS;
+                model.addAttribute(Constants.MESSAGE, this.getMessageSource(Constants.SUCCESS_MESSAGE));
+                model.addAttribute(Constants.ADDRESS, dto);
+                userSession.getCache().remove(Constants.ZIP_CODE);
+                return Constants.EDIT_ADDRESS;
             }else{
                 this.createMessages(model, response);
-                model.addAttribute(MessageConstants.ADDRESS, dto);
+                model.addAttribute(Constants.ADDRESS, dto);
                 return newAddress(userId, model);
             }
         }
@@ -110,13 +124,13 @@ public class AddressRegisterManagerController extends GenericController{
         dto.setId(addressId);
         Response response = this.addressService.update(this.createBearerToken(model), userId, addressId, dto);
         if(response.status() == HttpStatus.NO_CONTENT.value()){
-            model.addAttribute(MessageConstants.MESSAGE, this.getMessageSource(MessageConstants.SUCCESS_MESSAGE));
+            model.addAttribute(Constants.MESSAGE, this.getMessageSource(Constants.SUCCESS_MESSAGE));
         }else {
             this.createMessages(model, response);
 
         }
-        model.addAttribute(MessageConstants.ADDRESS, dto);
-        return MessageConstants.EDIT_ADDRESS;
+        model.addAttribute(Constants.ADDRESS, dto);
+        return Constants.EDIT_ADDRESS;
 
     }
 
@@ -127,8 +141,8 @@ public class AddressRegisterManagerController extends GenericController{
         }
         AddressDto addressDto = this.addressService.find(this.createBearerToken(model), userId, addressId);
         addressDto.setUserId(userId);
-        model.addAttribute(MessageConstants.ADDRESS, addressDto);
-        return MessageConstants.EDIT_ADDRESS;
+        model.addAttribute(Constants.ADDRESS, addressDto);
+        return Constants.EDIT_ADDRESS;
     }
 
     @GetMapping("delete-address/{userId}/{addressId}")
@@ -138,10 +152,10 @@ public class AddressRegisterManagerController extends GenericController{
         }
         Response response = this.addressService.delete(this.createBearerToken(model), userId, addressId);
         if(response.status() == HttpStatus.NO_CONTENT.value()){
-            return this.addresses(userId, 0, 24, MessageConstants.PUBLICAREA, MessageConstants.ASC, model);
+            return this.addresses(userId, 0, 24, Constants.PUBLICAREA, Constants.ASC, model);
         }else{
-            model.addAttribute(MessageConstants.ERRORMESSAGE, this.getMessageSource(MessageConstants.CONTACT_ADMINISTRATOR));
-            return MessageConstants.ERROR;
+            model.addAttribute(Constants.ERRORMESSAGE, this.getMessageSource(Constants.CONTACT_ADMINISTRATOR));
+            return Constants.ERROR;
         }
     }
 }
